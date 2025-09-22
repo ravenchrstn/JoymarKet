@@ -1,0 +1,53 @@
+package Models;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import DAs.PromoDA;
+
+public class Promo {
+    private String idPromo;
+    private String code;
+    private String headline; // or description in sequence diagram 7
+    private Double discountPercentage;
+    private static final PromoDA promoDA = PromoDA.getPromoDA();
+
+    public Promo(String idPromo, String code, String headline, Double discountPercentage) {
+        this.idPromo = idPromo;
+        this.code = code;
+        this.headline = headline;
+        this.discountPercentage = discountPercentage;
+    }
+
+    public static Promo fromResultSet(ResultSet rs) {
+        try {
+            return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static Promo getPromo(String code) {
+        // diagram 7
+        return fromResultSet(promoDA.readByCode(code).getRs());
+    }
+
+    public String getIdPromo() {
+        return idPromo;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public String getHeadline() {
+        return headline;
+    }
+
+    public Double getDiscountPercentage() {
+        return discountPercentage;
+    }
+
+}
