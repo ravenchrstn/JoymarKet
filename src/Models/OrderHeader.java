@@ -24,14 +24,14 @@ public class OrderHeader {
 
     public static HashMap<String, Object> createOrderHeader(String idCustomer, String idPromo) {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0));
+        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0.0));
         hashMap.put("idCustomer", idCustomer);
         return hashMap;
     }
 
     public HashMap<String, Object> createOrderHeader() {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0));
+        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0.0));
         hashMap.put("idCustomer", idCustomer);
         return hashMap;
     }
