@@ -19,8 +19,9 @@ public class ProductDA {
         return productDA;
     }
 
-    public ArrayList<Product> read() {
-        String query = ProductQueries.generateReadQuery();
+    public ArrayList<Product> getProducts() {
+        // diagram 2 - view products
+        String query = "SELECT idProduct, name, category, price, stock FROM products";
         Result res = this.connect.execQuery(query);
         ResultSet rs = res.getRs();
 

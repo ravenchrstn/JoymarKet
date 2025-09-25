@@ -57,13 +57,6 @@ public class Customer extends User {
         return userDA.topUpBalance(this.idUser, this.balance);
     }
 
-    public static String register(String fullName, String email, String password, String phone, String address) { 
-        // registerAccount di diagram 1
-
-        String idUser = userDA.registerCourier(fullName, email, password, phone, address);
-        return idUser;
-    }
-
     public HashMap<String, Object> createOrderHeader() {
         // Diagram 7
         OrderHeader oh = OrderHeader.createOrderHeader();
@@ -72,10 +65,6 @@ public class Customer extends User {
         hs.put("idCustomer", this.idUser);
 
         return hs;
-    }
-
-    public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {
-        // HashMap<String, Object> orderDetailHM = OrderDetail.
     }
 
     public HashMap<String, Object> createCartItem() {

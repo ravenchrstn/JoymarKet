@@ -6,10 +6,6 @@ import Models.User;
 
 public class ProductQueries {
 
-    public static String generateReadQuery() {
-        return "SELECT idProduct, name, category, price, stock FROM products";
-    }
-
     public static String generateReadQuery(String idProduct) {
         return "SELECT idProduct, name, category, price, stock FROM products WHERE idProduct = " + idProduct + " LIMIT 1";
     }

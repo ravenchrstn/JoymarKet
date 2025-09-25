@@ -49,6 +49,13 @@ public abstract class User {
         this.idUser = idUser;
     }
 
+    public static String register(String fullName, String email, String password, String phone, String address) { 
+        // diagram 1 - register account
+
+        String idUser = userDA.registerCustomer(fullName, email, password, phone, address);
+        return idUser;
+    }
+
     public static User getUser(String idUser) { // HERE
         // factories is to make objects that are used by children.
         return userDA.read(idUser);

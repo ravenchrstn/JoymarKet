@@ -21,7 +21,7 @@ public class ProductHandler {
     }
 
     public ArrayList<Product> getProducts() {
-        // mungkin diperbaikin, karena gak sama dengan diagram 2
+        // diagram 2 - view products
         return Product.getProducts();
     }
 

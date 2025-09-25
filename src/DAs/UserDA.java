@@ -23,8 +23,8 @@ public class UserDA {
         return userDA;
     }
 
-    public String registerCourier(String fullName, String email, String password, String phone, String address) { 
-        // diagram 1 register courier
+    public String registerCustomer(String fullName, String email, String password, String phone, String address) { 
+        // diagram 1 - register account
         String query = "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", Customer, 0)";
         return this.connect.execUpdate(query);
     }

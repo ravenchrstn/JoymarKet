@@ -31,6 +31,16 @@ public class Product {
         return null;
     }
 
+    public static Product getProduct(String idProduct) { // HERE
+        // return objek Product karena sudah mencover semua informasi yang harus dikembalikan
+        return productDA.read(idProduct);
+    }
+
+    public static ArrayList<Product> getProducts() {
+        // diagram 2 - view products
+        return productDA.getProducts();
+    }
+
     public String getIdProduct() {
         return idProduct;
     }
@@ -49,15 +59,6 @@ public class Product {
 
     public int getStock() {
         return stock;
-    }
-
-    public static Product getProduct(String idProduct) { // HERE
-        // return objek Product karena sudah mencover semua informasi yang harus dikembalikan
-        return productDA.read(idProduct);
-    }
-
-    public static ArrayList<Product> getProducts() {
-        return productDA.read();
     }
 
     public static Product getAvailableProduct(String idProduct) { // HERE
