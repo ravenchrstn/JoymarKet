@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import App.Connect;
-import Helper.Result;
+import Helpers.Result;
 import Models.Product;
 import Queries.ProductQueries;
 

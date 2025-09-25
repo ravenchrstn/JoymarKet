@@ -17,10 +17,6 @@ public abstract class UserQueries {
         return "UPDATE users SET balance = " + newBalance + " WHERE idUser = " + idCustomer;
     }
 
-    public static String generateRegisterCustomerQuery(String fullName, String email, String password, String phone, String address) {
-        return "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", 0)";
-    }
-
     public static String generateReadQuery(String idUser) {
         return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE idUser = " + idUser + " LIMIT 1";
     }
@@ -31,6 +27,10 @@ public abstract class UserQueries {
 
     public static String generateReadCourierQuery(String idUser) {
         return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'courier' AND idUser = " + idUser + " LIMIT 1";
+    }
+
+    public static String generateReadCourierQuery() {
+        return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'courier'";
     }
 
     public static String generateReadAdminQuery(String idUser) {

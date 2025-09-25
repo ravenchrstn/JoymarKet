@@ -1,10 +1,14 @@
 package Models;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import DAs.OrderDetailDA;
 import DAs.OrderHeaderDA;
+import Helpers.Result;
 import Queries.OrderHeaderQueries;
 
 public class OrderHeader {
@@ -22,6 +26,16 @@ public class OrderHeader {
         this.totalAmount = totalAmount;
     }
 
+    public static OrderHeader fromResultSet(ResultSet rs) {
+        try {
+            return new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getDate("orderedAt"), rs.getDouble("totalAmount"));
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
     public static HashMap<String, Object> createOrderHeader(String idCustomer, String idPromo) {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
         hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0.0));
@@ -29,11 +43,9 @@ public class OrderHeader {
         return hashMap;
     }
 
-    public HashMap<String, Object> createOrderHeader() {
-        HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0.0));
-        hashMap.put("idCustomer", idCustomer);
-        return hashMap;
+    public static OrderHeader createOrderHeader() {
+        OrderHeader orderHeader = new OrderHeader(null, null, null, null, null, null);
+        return orderHeader;
     }
 
     public static boolean editOrderHeaderStatus(String idOrder, String status) {
@@ -43,21 +55,58 @@ public class OrderHeader {
         return false;
     }
 
-    public static OrderHeader getOrderHeader(String idOrder) {
-        return orderHeaderDA.read(OrderHeaderQueries.generateReadQuery(idOrder)).get(0);
+    public static ArrayList<HashMap<String, Object>> getOrderHeaders() {
+        // diagram 11
+        ArrayList<OrderHeader> ohs = orderHeaderDA.read();
+        ArrayList<String> idsOrder = new ArrayList<String>();
+        for (int i = 0; i < ohs.size(); i++) {
+            idsOrder.add(ohs.get(i).getIdOrder());
+        }
+
+        ArrayList<String> idsProduct = new ArrayList<String>();
+        Result res = OrderDetail.getIdsProduct(idsOrder);
+        try {
+            while (res.getRs().next()) {
+                String idProduct = res.getRs().getString("idProduct");
+                idsProduct.add(idProduct);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        ArrayList<OrderDetail> ods = new ArrayList<OrderDetail>();
+        
+        for (int i = 0; i < idsProduct.size(); i++) {
+            // OrderDetail od = 
+            // ods.add(null)
+        }
     }
 
-    public static ArrayList<OrderHeader> getCustomerOrderHeader(String idOrder, String idCustomer) {
-        // perbaikin ini, diagram 8
-        return orderHeaderDA.read(OrderHeaderQueries.generateReadCustomerOrderHeaderQuery(idOrder, idCustomer));
+    public static HashMap<String, String> getCustomerOrderHeader(String idOrder) {
+        // diagram 8, ngetsuck
+        
+        // return OrderDetail.getCustomerOrderDetail(idOrder, );
     }
 
-    public OrderHeader saveDataOrderHeader(String idProduct, int qty) {        
-        orderHeaderDA.saveDA(idOrder, idProduct, qty);
-        this.totalAmount = orderHeaderDA.readTotalAmount(idProduct);
+    public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {   
+        // diagram 7
+        
+        Product product = Product.getProduct(idProduct);
+        this.totalAmount += product.getPrice() * qty;
 
-        // orderDetail.saveOrderDetail(idProduct, qty)
-        return this;
+        // ini hanya mengubah totalAmount
+        orderHeaderDA.saveDA(idOrder, this.totalAmount); 
+
+        // membuat order detail baru
+        OrderDetail.saveOrderDetail(this.idOrder, idProduct, qty);
+
+        HashMap<String, Object> returnHashMap = new HashMap<String, Object>();
+        returnHashMap.put("idOrder", this.idOrder);
+        returnHashMap.put("idCustomer", this.idCustomer);
+        returnHashMap.put("idPromo", this.idPromo);
+        returnHashMap.put("orderedAt", this.orderedAt);
+        returnHashMap.put("totalAmount", this.totalAmount);
+        return returnHashMap;
     }
 
     public String getIdOrder() {

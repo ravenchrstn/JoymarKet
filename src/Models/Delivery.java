@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import DAs.DeliveryDA;
-import Helper.Result;
+import Helpers.Result;
 
 public class Delivery {
     private String idOrder, idCourier, status;

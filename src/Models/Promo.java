@@ -6,9 +6,7 @@ import java.sql.SQLException;
 import DAs.PromoDA;
 
 public class Promo {
-    private String idPromo;
-    private String code;
-    private String headline; // or description in sequence diagram 7
+    private String idPromo, code, headline; // or description in sequence diagram 7
     private Double discountPercentage;
     private static final PromoDA promoDA = PromoDA.getPromoDA();
 

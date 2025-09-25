@@ -1,9 +1,10 @@
 package DAs;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import App.Connect;
-import Helper.Result;
+import Helpers.Result;
 import Queries.OrderDetailQueries;
 
 public class OrderDetailDA {
@@ -22,6 +23,12 @@ public class OrderDetailDA {
 
     public Result read(String idOrder, String idProduct) {
         return connect.execQuery(OrderDetailQueries.generateReadQuery(idOrder, idProduct));
+    }
+
+    public Result read(ArrayList<String> idsOrder) {
+        // diagram 11, tidak ada di diagram
+        // read one order detail by idOrder
+        return connect.execQuery(OrderDetailQueries.generateReadIdsProductQuery(idsOrder));
     }
 
     public HashMap<String, Object> saveDetailDA(String idOrder, String idProduct, int qty) {

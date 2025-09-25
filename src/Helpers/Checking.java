@@ -1,4 +1,4 @@
-package Helper;
+package Helpers;
 
 public class Checking {
     public static boolean isNumeric(String number) {

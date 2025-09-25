@@ -11,6 +11,10 @@ public abstract class OrderHeaderQueries {
         return "SELECT idOrder, idCustomer, idPromo, status, orderedAt, totalAmount FROM order_headers WHERE idOrder = " + idOrder;
     }
 
+    public static String generateReadQuery() {
+        return "SELECT idOrder, idCustomer, idPromo, status, orderedAt, totalAmount FROM order_headers";
+    }
+
     public static String generateReadCustomerOrderHeaderQuery(String idOrder, String idCustomer) {
         return "SELECT idOrder, idCustomer, idPromo, status, orderedAt, totalAmount FROM order_headers WHERE idOrder = " + idOrder + " AND idCustomer = " + idCustomer;
     }
@@ -19,8 +23,8 @@ public abstract class OrderHeaderQueries {
         return "INSERT INTO order_headers(idCustomer, idPromo, status, orderedAt, totalAmount) VALUES (" + orderHeader.getIdCustomer() + ", " + orderHeader.getIdPromo() + ", " + orderHeader.getStatus() + ", " + orderHeader.getOrderedAt() + ", " + orderHeader.getTotalAmount();
     }
 
-    public static String generateUpdateTotalAmountQuery(String idOrder, String idProduct, int qty) {
-        return "UPDATE order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct SET oh.totalAmount = p.price * " + qty + " WHERE od.idOrder = " + idOrder + " AND od.idProduct = " + idProduct;
+    public static String generateUpdateTotalAmountQuery(String idOrder, Double totalAmount) {
+        return "UPDATE order_headers SET totalAmount = " + totalAmount + " WHERE idOrder = " + idOrder;
     }
 
     public static String generateReadTotalAmountQuery(String idOrder) {

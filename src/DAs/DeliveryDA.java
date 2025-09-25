@@ -3,7 +3,7 @@ package DAs;
 import java.util.HashMap;
 
 import App.Connect;
-import Helper.Result;
+import Helpers.Result;
 import Queries.DeliveryQueries;
 
 public class DeliveryDA {

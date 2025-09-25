@@ -1,9 +1,7 @@
 package App;
 
 import java.sql.*;
-import java.util.HashMap;
-
-import Helper.Result;
+import Helpers.Result;
 
 public class Connect {
     private final String USERNAME = "root";
@@ -41,16 +39,17 @@ public class Connect {
         return result;
     }
 
-    public HashMap<String, Object> execUpdate(String query) {
-        HashMap<String, Object> hashMap = new HashMap<String, Object>();
+    public String execUpdate(String query) {
+        String id = "-2";
         try {
-            hashMap.put("rowsAffected", this.st.executeUpdate(query));
-            ResultSet rs = st.getGeneratedKeys();
+            int rowsAffected = this.st.executeUpdate(query);
+            if (rowsAffected <= 0) return "-1";
 
-            hashMap.put("generatedKeys", Integer.toString(rs.getInt(1))); // mendapatkan id dari kolom pertama
+            ResultSet rs = this.st.getGeneratedKeys();
+            id = rs.getString(1);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return hashMap;
+        return id;
     }
 }

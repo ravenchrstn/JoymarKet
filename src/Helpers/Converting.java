@@ -1,4 +1,4 @@
-package Helper;
+package Helpers;
 
 public class Converting {
     public static Double toDouble(String number) {

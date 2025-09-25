@@ -18,14 +18,13 @@ public class CartItem {
     }
 
     public Product getProduct(String idProduct) {
-        // init(); ke Product
-        // getData(String idProduct) ke Product
+        // diagram 3
+        // Product product = Product.getData
         return null;
     }
 
-    public CartItem createCartItem(String idCustomer, String idProduct, int count) {
-        // saveDA()
-        return null;
+    public static CartItem createCartItem() {
+        return new CartItem();
     }
 
     public static HashMap<String, String> deleteCartItem(String idCustomer, String idProduct) {

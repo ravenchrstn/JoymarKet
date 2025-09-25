@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import App.Connect;
+import Helpers.Result;
 import Models.OrderHeader;
 import Queries.OrderHeaderQueries;
 
@@ -16,14 +17,38 @@ public class OrderHeaderDA {
         return orderHeaderDA;
     }
 
-    public int saveDA(String idOrder, String idProduct, int qty) {
-        // update total amount
-        String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, idProduct, qty);
+    public int saveDA(String idOrder, Double totalAmount) {
+        // update totalAmount
+        String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, totalAmount);
         return (int) connect.execUpdate(query).get("rowsAffected");
     }
 
-    public ArrayList<OrderHeader> read(String query) {
-        throw new UnsupportedOperationException("Unimplemented method 'read'");
+    // public int saveDA(String idOrder, String idProduct, int qty) {
+    //     // update total amount
+    //     String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, idProduct, qty);
+    //     return (int) connect.execUpdate(query).get("rowsAffected");
+    // }
+
+    public OrderHeader read(String idOrder) {
+        String query = OrderHeaderQueries.generateReadQuery(idOrder);
+        return OrderHeader.fromResultSet(connect.execQuery(query).getRs());
+    }
+
+    public ArrayList<OrderHeader> read() {
+        String query = OrderHeaderQueries.generateReadQuery();
+        Result res = connect.execQuery(query);
+        ArrayList<OrderHeader> ohs = new ArrayList<OrderHeader>();
+
+        try {
+            while (res.getRs().next()) {
+                OrderHeader oh = OrderHeader.fromResultSet(res.getRs());
+                ohs.add(oh);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        return ohs;
     }
 
     public Double readTotalAmount(String idOrder) {
@@ -34,14 +59,6 @@ public class OrderHeaderDA {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public <R extends OrderHeader> int saveDA(R orderHeader, String query) {
-        throw new UnsupportedOperationException("Unimplemented method 'saveDA'");
-    }
-
-    public <R extends OrderHeader> int saveDA(ArrayList<R> orderHeaders, String query) {
-        throw new UnsupportedOperationException("Unimplemented method 'saveDA'");
     }
 
     public int updateStatus(String idOrder, String status) {

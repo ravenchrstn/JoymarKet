@@ -1,6 +1,6 @@
 package Validators;
 
-import Helper.Checking;
+import Helpers.Checking;
 
 public class UserValidators {
 

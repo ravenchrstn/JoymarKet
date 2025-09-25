@@ -1,6 +1,8 @@
 package Validators;
 
+import Models.Courier;
 import Models.Customer;
+import Models.OrderHeader;
 import Models.Product;
 import Models.Promo;
 
@@ -29,6 +31,18 @@ public class BusinessValidators {
 
     public boolean validateProductCountToCart(String idProduct, Integer count) {
         if (count > Product.getAvailableProduct(idProduct).getStock()) return false;
+        return true;
+    }
+
+    public boolean validateIdOrderExist(String idOrder) {
+        OrderHeader oh = OrderHeader.getOrderHeader(idOrder);
+        if (oh.getIdOrder() == null) return false;
+        return true;
+    }
+
+    public boolean validateIdCourierExist(String idCourier) {
+        Courier oh = Courier.getCourier(idCourier);
+        if (oh.getIdUser() == null) return false;
         return true;
     }
 }

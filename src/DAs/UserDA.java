@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 import App.Connect;
-import Helper.Result;
+import Helpers.Result;
 import Models.Admin;
 import Models.Courier;
 import Models.Customer;
@@ -21,6 +21,12 @@ public class UserDA {
     public static UserDA getUserDA() {
         if (userDA == null) userDA = new UserDA();
         return userDA;
+    }
+
+    public String registerCourier(String fullName, String email, String password, String phone, String address) { 
+        // diagram 1 register courier
+        String query = "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", Customer, 0)";
+        return this.connect.execUpdate(query);
     }
 
     public User read(String idUser) {
@@ -96,6 +102,22 @@ public class UserDA {
         return users;
     }
 
+    public ArrayList<Courier> readCouriers() {
+        String query = UserQueries.generateReadCourierQuery();
+        Result res = this.connect.execQuery(query);
+
+        ArrayList<Courier> couriers = new ArrayList<Courier>();
+        try {
+            while (res.getRs().next()) {
+                Courier courier = Courier.fromResultSet(res.getRs());
+                couriers.add(courier);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return couriers;
+    }
+
     public boolean topUpBalance(String idCustomer, Double newBalance) {
         String query = UserQueries.generateUpdateQuery(idCustomer, newBalance);
         HashMap<String, Object> hashMap = this.connect.execUpdate(query);
@@ -103,12 +125,6 @@ public class UserDA {
 
         if (rowsAffected <= 0) return false;
         return true;
-    }
-
-    public HashMap<String, Object> saveDA(String fullName, String email, String password, String phone, String address) { 
-        // register account and edit profile
-        String query = UserQueries.generateRegisterCustomerQuery(fullName, email, password, phone, address);
-        return this.connect.execUpdate(query);
     }
 
     public int saveDA(String idUser, String fullName, String phone, String address) {

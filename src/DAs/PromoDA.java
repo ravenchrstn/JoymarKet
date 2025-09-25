@@ -1,7 +1,7 @@
 package DAs;
 
 import App.Connect;
-import Helper.Result;
+import Helpers.Result;
 import Queries.PromoQueries;
 
 public class PromoDA {
