@@ -1,9 +1,6 @@
 package DAs;
 
-import java.util.HashMap;
-
 import App.Connect;
-import Queries.CartItemQueries;
 
 public class CartItemDA {
     private Connect connect = Connect.getInstance();
@@ -14,9 +11,9 @@ public class CartItemDA {
         return cartItemDA;
     }
 
-    public HashMap<String, Object> saveDA(String idCustomer, String idProduct) {
-        // delete
-        String query = CartItemQueries.generateDeleteCartItemQuery(idCustomer, idProduct);
+    public String delete(String idCustomer, String idProduct) {
+        // diagram 5 - remove cart item
+        String query = "DELETE FROM cart_items WHERE idCustomer = " + idCustomer + " AND idProduct = " + idProduct;
         return this.connect.execUpdate(query);
     }
 }

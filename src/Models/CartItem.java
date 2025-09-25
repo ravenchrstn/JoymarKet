@@ -1,7 +1,5 @@
 package Models;
 
-import java.util.HashMap;
-
 import DAs.CartItemDA;
 
 public class CartItem {
@@ -27,13 +25,9 @@ public class CartItem {
         return new CartItem();
     }
 
-    public static HashMap<String, String> deleteCartItem(String idCustomer, String idProduct) {
-        HashMap<String, String> returnHashMap = new HashMap<String, String>();
-        cartItemDA.saveDA(idCustomer, idProduct);
-        returnHashMap.put("idCustomer", idCustomer);
-        returnHashMap.put("idProduct", idProduct);
-
-        return returnHashMap;
+    public static String deleteCartItem(String idCustomer, String idProduct) {
+        // diagram 5 - remove cart item
+        return cartItemDA.delete(idCustomer, idProduct);
     }
 }
 

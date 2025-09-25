@@ -18,8 +18,10 @@ public class CartItemHandler {
         return null;
     }
 
-    public HashMap<String, String> deleteCartItem(String idCustomer, String idProduct) {
-        // diagram 5
+    public String deleteCartItem(String idCustomer, String idProduct) {
+        // diagram 5 - remove cart item
+
+        // return id
         return CartItem.deleteCartItem(idCustomer, idProduct);
     }
 }
