@@ -1,10 +1,15 @@
 package DAs;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import App.Connect;
 import Helpers.Result;
+import Models.Admin;
+import Models.Courier;
+import Models.Customer;
 import Models.OrderHeader;
 import Queries.OrderHeaderQueries;
 
@@ -15,6 +20,29 @@ public class OrderHeaderDA {
     public static OrderHeaderDA getOrderHeaderDA() {
         if (orderHeaderDA == null) orderHeaderDA = new OrderHeaderDA();
         return orderHeaderDA;
+    }
+
+    public ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
+        // diagram 8 - view order history
+        String query = "SELECT oh.idOrder, oh.orderedAt, oh.totalAmount, od.qty, p.idProduct, p.name FROM order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct JOIN (SELECT idOrder, MIN(idProduct) FROM order_details GROUP BY idOrder) od_single ON od.idOrder = od_single.idOrder AND od_single.idProduct = od.idProduct WHERE oh.idCustomer = " + idCustomer + " ORDER BY oh.orderedAt DESC;";
+        ResultSet rs = connect.execQuery(query).getRs();
+        ArrayList<HashMap<String, Object>> al = new ArrayList<HashMap<String, Object>>();
+
+        try {
+            while (rs.next()) {
+                HashMap<String, Object> hm = new HashMap<String, Object>();
+                hm.put("idOrder", rs.getString("idOrder"));
+                hm.put("orderedAt", rs.getString("orderedAt"));
+                hm.put("totalAmount", rs.getString("totalAmount"));
+                hm.put("qty", rs.getString("qty"));
+                hm.put("idProduct", rs.getString("idProduct"));
+                hm.put("name", rs.getString("name"));
+                al.add(hm);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return al;
     }
 
     public int saveDA(String idOrder, Double totalAmount) {
@@ -29,26 +57,21 @@ public class OrderHeaderDA {
     //     return (int) connect.execUpdate(query).get("rowsAffected");
     // }
 
-    public OrderHeader read(String idOrder) {
-        String query = OrderHeaderQueries.generateReadQuery(idOrder);
-        return OrderHeader.fromResultSet(connect.execQuery(query).getRs());
-    }
-
     public ArrayList<OrderHeader> read() {
         String query = OrderHeaderQueries.generateReadQuery();
         Result res = connect.execQuery(query);
-        ArrayList<OrderHeader> ohs = new ArrayList<OrderHeader>();
+        ArrayList<OrderHeader> hm = new ArrayList<OrderHeader>();
 
         try {
             while (res.getRs().next()) {
                 OrderHeader oh = OrderHeader.fromResultSet(res.getRs());
-                ohs.add(oh);
+                hm.add(oh);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
-        return ohs;
+        return hm;
     }
 
     public Double readTotalAmount(String idOrder) {

@@ -52,17 +52,20 @@ public class OrderDetail {
         return returnHashMap;
     }   
 
-    public static HashMap<String, Object> getCustomerOrderDetail(String idOrder, String idProduct) {
-        // diagram 8
+    public static HashMap<String, Object> getCustomerOrderDetail(String idOrder) {
+        // diagram 8 - view order history
+
         // return idOrder, idProduct, name, price, stock, category
-        Product productHashMap = Product.getProduct(idProduct);
-        HashMap<String, Object> returnHashMap = new HashMap<String, Object>();
-        returnHashMap.put("idOrder", idOrder);
-        returnHashMap.put("idProduct", productHashMap.getIdProduct());
-        returnHashMap.put("name", productHashMap.getName());
-        returnHashMap.put("price", productHashMap.getPrice());
-        returnHashMap.put("stock", productHashMap.getStock());
-        returnHashMap.put("category", productHashMap.getCategory());
+
+        String idProduct = 
+        Product product = Product.getProduct(idProduct);
+        // HashMap<String, Object> returnHashMap = new HashMap<String, Object>();
+        // returnHashMap.put("idOrder", idOrder);
+        // returnHashMap.put("idProduct", productHashMap.getIdProduct());
+        // returnHashMap.put("name", productHashMap.getName());
+        // returnHashMap.put("price", productHashMap.getPrice());
+        // returnHashMap.put("stock", productHashMap.getStock());
+        // returnHashMap.put("category", productHashMap.getCategory());
         
         return returnHashMap;
     }

@@ -6,10 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import DAs.OrderDetailDA;
 import DAs.OrderHeaderDA;
 import Helpers.Result;
-import Queries.OrderHeaderQueries;
 
 public class OrderHeader {
     private String idOrder, idCustomer, idPromo, status;
@@ -34,6 +32,11 @@ public class OrderHeader {
         }
 
         return null;
+    }
+
+    public static ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
+        // diagram 8 - view order history
+        return orderHeaderDA.getCustomerOrderHistories(idCustomer);
     }
 
     public static HashMap<String, Object> createOrderHeader(String idCustomer, String idPromo) {
@@ -75,17 +78,11 @@ public class OrderHeader {
         }
 
         ArrayList<OrderDetail> ods = new ArrayList<OrderDetail>();
-        
+
         for (int i = 0; i < idsProduct.size(); i++) {
             // OrderDetail od = 
             // ods.add(null)
         }
-    }
-
-    public static HashMap<String, String> getCustomerOrderHeader(String idOrder) {
-        // diagram 8, ngetsuck
-        
-        // return OrderDetail.getCustomerOrderDetail(idOrder, );
     }
 
     public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {   

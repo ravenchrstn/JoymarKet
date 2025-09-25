@@ -16,9 +16,9 @@ public class OrderHeaderHandler {
         return cust.createOrderHeader();
     }
 
-    public HashMap<String, Object> getCustomerOrderHeader(String idOrder) {
-        // return OrderDetail.
-        return null;
+    public ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
+        // diagram 8 - view order history
+        return OrderHeader.getCustomerOrderHistories(idCustomer);
     }
 
     public Promo getPromo(String code) {

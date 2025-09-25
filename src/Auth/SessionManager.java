@@ -1,67 +1,43 @@
 package Auth;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.util.Properties;
 
 import Models.User;
 
 public abstract class SessionManager {
-    private static final String FILENAME = "session.properties";
     private static final long EXPIRY_DURATION = 60 * 60 * 1000; // 60 minutes
+    private static long loggedInAt = 0;
     private static User user;
 
-    public static User getUser() throws IOException {
-        if (user == null) user = loadUser();
+    public static User getUser() {
         return user;
     }
 
-    public static void save(String userId, String username, String role) throws FileNotFoundException, IOException {
-        Properties prop = new Properties();
-        prop.setProperty("userId", userId);
-        prop.setProperty("username", username);
-        prop.setProperty("role", role);
-        prop.setProperty("loggedInAt", String.valueOf(System.currentTimeMillis()));
-
-        try (FileOutputStream fos = new FileOutputStream(FILENAME)) {
-            prop.store(fos, "Session Data");   
-        }
+    public static void saveSession(User u) {
+        user = u;
+        loggedInAt = System.currentTimeMillis();
     }
 
-    public static User loadUser() throws IOException {
-        Properties prop = new Properties();
-        try (FileInputStream fis = new FileInputStream(FILENAME)) {
-            prop.load(fis);
-        }
-        return User.getUser(prop.getProperty("userId"));
+    public static void clearSession() {
+        user = null;
+        loggedInAt = 0;
     }
 
-    public static void validateSession() throws FileNotFoundException, IOException {
-        if (isSessionValid() == false) clearSession();
+    public static void validateSession() {
+        if ((loggedInAt + EXPIRY_DURATION) <= System.currentTimeMillis()) clearSession();
     }
 
-    public static boolean isSessionValid() throws FileNotFoundException, IOException {
-        Properties prop = new Properties();
-        try (FileInputStream fis = new FileInputStream(FILENAME)) {
-            prop.load(fis);
-        }
+    // public static boolean isSessionValid() throws FileNotFoundException, IOException {
+    //     Properties prop = new Properties();
+    //     try (FileInputStream fis = new FileInputStream(FILENAME)) {
+    //         prop.load(fis);
+    //     }
 
-        String loggedInAtStr = prop.getProperty("loggedInAt");
-        if (loggedInAtStr == null) return false;
+    //     String loggedInAtStr = prop.getProperty("loggedInAt");
+    //     if (loggedInAtStr == null) return false;
 
-        long loggedInAt = Long.parseLong(loggedInAtStr);
-        long now = System.currentTimeMillis();
+    //     long loggedInAt = Long.parseLong(loggedInAtStr);
+    //     long now = System.currentTimeMillis();
 
-        if ((now - loggedInAt) >= EXPIRY_DURATION) return false;
-        return true;
-    }
-
-    public static void clearSession() throws FileNotFoundException, IOException {
-        Properties prop = new Properties();
-
-        try (FileOutputStream fos = new FileOutputStream(FILENAME)) {
-            prop.store(fos, "Cleared File");
-        }
-    }
+    //     if ((now - loggedInAt) >= EXPIRY_DURATION) return false;
+    //     return true;
+    // }
 }

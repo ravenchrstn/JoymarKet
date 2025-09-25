@@ -7,10 +7,6 @@ public abstract class OrderDetailQueries {
         return "INSERT INTO order_details (idOrder, idProduct, qty) VALUES (" + idOrder + ", " + idProduct + ", " + qty + ")";
     }
 
-    public static String generateReadQuery(String idOrder, String idProduct) {
-        
-    }
-
     public static String generateReadIdsProductQuery(ArrayList<String> idsOrder) {
         String query = "SELECT idProduct FROM order_details WHERE idOrder in (";
         for (int i = 0; i < idsOrder.size(); i++) {
