@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import DAs.OrderHeaderDA;
-import Helpers.Result;
 
 public class OrderHeader {
     private String idOrder, idCustomer, idPromo, status;
@@ -58,31 +57,9 @@ public class OrderHeader {
         return false;
     }
 
-    public static ArrayList<HashMap<String, Object>> getOrderHeaders() {
-        // diagram 11
-        ArrayList<OrderHeader> ohs = orderHeaderDA.read();
-        ArrayList<String> idsOrder = new ArrayList<String>();
-        for (int i = 0; i < ohs.size(); i++) {
-            idsOrder.add(ohs.get(i).getIdOrder());
-        }
-
-        ArrayList<String> idsProduct = new ArrayList<String>();
-        Result res = OrderDetail.getIdsProduct(idsOrder);
-        try {
-            while (res.getRs().next()) {
-                String idProduct = res.getRs().getString("idProduct");
-                idsProduct.add(idProduct);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        ArrayList<OrderDetail> ods = new ArrayList<OrderDetail>();
-
-        for (int i = 0; i < idsProduct.size(); i++) {
-            // OrderDetail od = 
-            // ods.add(null)
-        }
+    public static ArrayList<HashMap<String, Object>> getAllOrders() {
+        // diagram 11 - view all orders
+        return orderHeaderDA.getAllOrders();
     }
 
     public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {   

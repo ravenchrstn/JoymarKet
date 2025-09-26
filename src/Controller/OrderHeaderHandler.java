@@ -31,8 +31,8 @@ public class OrderHeaderHandler {
         return saveDataOrderHeader(idProduct, qty);
     }
 
-    public ArrayList<HashMap<String, Object>> getOrderHeaders() {
-        // diagram 11
-        return OrderHeader.getOrderHeaders();
+    public ArrayList<HashMap<String, Object>> getAllOrders() {
+        // diagram 11 - view all orders
+        return OrderHeader.getAllOrders();
     }
 }
