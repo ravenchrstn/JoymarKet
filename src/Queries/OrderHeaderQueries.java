@@ -7,10 +7,6 @@ public abstract class OrderHeaderQueries {
         return "UPDATE order_headers SET status = " + status + " WHERE idOrder = " + idOrder;
     }
 
-    public static String generateReadQuery() {
-        return "SELECT idOrder, idCustomer, idPromo, status, orderedAt, totalAmount FROM order_headers";
-    }
-
     public static String generateReadCustomerOrderHeaderQuery(String idOrder, String idCustomer) {
         return "SELECT idOrder, idCustomer, idPromo, status, orderedAt, totalAmount FROM order_headers WHERE idOrder = " + idOrder + " AND idCustomer = " + idCustomer;
     }

@@ -82,21 +82,18 @@ public class OrderHeaderDA {
     //     return (int) connect.execUpdate(query).get("rowsAffected");
     // }
 
-    public ArrayList<OrderHeader> read() {
-        String query = OrderHeaderQueries.generateReadQuery();
-        Result res = connect.execQuery(query);
-        ArrayList<OrderHeader> hm = new ArrayList<OrderHeader>();
-
+    public String findIdOrder(String idOrder) {
+        // diagram 12 - business validators
+        String query = "SELECT idOrder FROM order_headers";
+        ResultSet rs = connect.execQuery(query).getRs();
+        String idOrderReturn = null;
         try {
-            while (res.getRs().next()) {
-                OrderHeader oh = OrderHeader.fromResultSet(res.getRs());
-                hm.add(oh);
-            }
+            idOrderReturn = rs.getString("idOrder");
         } catch (SQLException e) {
             e.printStackTrace();
         }
         
-        return hm;
+        return idOrderReturn;
     }
 
     public Double readTotalAmount(String idOrder) {

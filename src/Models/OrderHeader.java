@@ -33,6 +33,11 @@ public class OrderHeader {
         return null;
     }
 
+    public static String findIdOrder(String idOrder) {
+        // diagram 12 - business validators
+        return orderHeaderDA.findIdOrder(idOrder);
+    }
+
     public static ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
         // diagram 8 - view order history
         return orderHeaderDA.getCustomerOrderHistories(idCustomer);

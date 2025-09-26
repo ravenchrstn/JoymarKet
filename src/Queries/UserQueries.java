@@ -28,11 +28,6 @@ public abstract class UserQueries {
     public static String generateReadCourierQuery(String idUser) {
         return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'courier' AND idUser = " + idUser + " LIMIT 1";
     }
-
-    public static String generateReadCourierQuery() {
-        return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'courier'";
-    }
-
     public static String generateReadAdminQuery(String idUser) {
         return "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'admin' AND idUser = " + idUser + " LIMIT 1";
     }

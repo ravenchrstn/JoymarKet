@@ -3,7 +3,6 @@ package Models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Courier extends User {
     private String vehicleType, vehiclePlate;
@@ -32,17 +31,8 @@ public class Courier extends User {
         return null;
     }
     
-    public static HashMap<String, String> getCourier(String idCourier) {
-        // diagram 10, kemungkinan tidak dipakai
-        User user = userDA.read(idCourier);
-        HashMap<String, String> returnHashMap = new HashMap<String, String>();
-        returnHashMap.put("idUser", user.getIdUser());
-        returnHashMap.put("name", user.getFullName());
-        returnHashMap.put("email", user.getEmail());
-        returnHashMap.put("phone", user.getEmail());
-        returnHashMap.put("address", user.getAddress());
-        
-        return returnHashMap;
+    public static Courier getCourier(String idCourier) {   
+        return userDA.findCourierToValidate(idCourier);
     }
 
     public static ArrayList<Courier> getAllCouriers() {

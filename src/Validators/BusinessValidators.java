@@ -5,6 +5,7 @@ import Models.Customer;
 import Models.OrderHeader;
 import Models.Product;
 import Models.Promo;
+import Models.User;
 
 public class BusinessValidators {
     private final UserValidators userValidators;
@@ -34,15 +35,22 @@ public class BusinessValidators {
         return true;
     }
 
-    public boolean validateIdOrderExist(String idOrder) {
-        OrderHeader oh = OrderHeader.getOrderHeader(idOrder);
-        if (oh.getIdOrder() == null) return false;
+    public boolean doesOrderExist(String idOrder) {
+        // diagram 12 - business validators
+        String idOrderReturn = OrderHeader.findIdOrder(idOrder);
+        if (idOrderReturn == null) return false;
         return true;
     }
 
-    public boolean validateIdCourierExist(String idCourier) {
-        Courier oh = Courier.getCourier(idCourier);
+    public boolean doesCourierExist(Courier oh) {
+        // diagram 12 - business validators
         if (oh.getIdUser() == null) return false;
+        return true;
+    }
+
+    public boolean isCourier(User user) {
+        // diagram 12 - business validators
+        if (user.getRole().equals("courier") == false) return false;
         return true;
     }
 }

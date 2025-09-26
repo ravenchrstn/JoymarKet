@@ -25,8 +25,9 @@ public class DeliveryDA {
         return connection.execUpdate(query);
     }
 
-    public Result saveDA(String idOrder, String idCourier) {
-        String query = DeliveryQueries.generateRegisterQuery(idOrder, idCourier);
+    public Result updateStatus(String idOrder, String idCourier, String status) {
+        // diagram 12 - assign order to courier
+        String query = "INSERT INTO deliveries (idOrder, idCourier, status) VALUES ('" + idOrder + "', '" + idCourier + "', '" + status + "');";
         return connection.execQuery(query);
     }
 }

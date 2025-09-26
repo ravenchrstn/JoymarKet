@@ -26,10 +26,16 @@ public class Delivery {
         return null;
     }
 
-    public static Delivery createDelivery(String idOrder, String idCourier) {
-        // diagram 12
-        Result saveDA = deliveryDA.saveDA(idOrder, idCourier);
-        return fromResultSet(saveDA.getRs());
+    public static String updateStatus(String idOrder, String idCourier, String status) {
+        // diagram 12 - assign order to courier
+        Result res = deliveryDA.updateStatus(idOrder, idCourier, status);
+        String statusReturn = null;
+        try {
+            statusReturn = res.getRs().getString(status);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statusReturn;
     }
 
     public Delivery editDeliveryStatus(String idOrder, String status) {

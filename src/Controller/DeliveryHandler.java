@@ -1,7 +1,6 @@
 package Controller;
 
-import java.util.HashMap;
-
+import Models.Courier;
 import Models.Delivery;
 import Models.OrderHeader;
 import Validators.BusinessValidators;
@@ -17,25 +16,22 @@ public class DeliveryHandler {
         return getOrderHeader(idOrder);
     }
 
-    public HashMap<String, String> createDelivery(String idOrder, String idCourier) {
-        HashMap<String, String> returnHashMap = new HashMap<String, String>();
+    public String processDelivery(String idOrder, String idCourier) {
+        // diagram 12 - assign order to courier
+        Courier oh = Courier.getCourier(idCourier);
         
         // validation
-        if (this.bv.validateIdCourierExist(idCourier)) {
-            returnHashMap.put("errorMessage", "idOrder is not found.");
-            return returnHashMap;
+        if (this.bv.doesCourierExist(oh) == false) {
+            return "courier does not exist.";
+        } else if (this.bv.isCourier(oh) == false) {
+            return "Not a courier.";
         }
 
-        if (this.bv.validateIdOrderExist(idOrder)) {
-            returnHashMap.put("errorMessage", "idCourier is not found.");
-            return returnHashMap;
+        if (this.bv.doesOrderExist(idOrder) == false) {
+            return "order does not exist.";
         }
         
-        Delivery delivery = Delivery.createDelivery(idOrder, idCourier);
-        returnHashMap.put("idOrder", delivery.getIdOrder());
-        returnHashMap.put("idCourier", delivery.getIdCourier());
-        returnHashMap.put("status", delivery.getStatus());
-
-        return returnHashMap;
+        String status = Delivery.updateStatus(idOrder, idCourier, "in progress");
+        return status;
     }
 }

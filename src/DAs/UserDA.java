@@ -29,6 +29,22 @@ public class UserDA {
         return this.connect.execUpdate(query);
     }
 
+    public Courier findCourierToValidate(String idCourier) {
+        // business validators
+        String query = "SELECT idUser, role FROM users WHERE role = 'courier'";
+        ResultSet rs = this.connect.execQuery(query).getRs();
+        Courier courier = null;
+        try {
+            while (rs.next()) {
+                courier = Courier.fromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return courier;
+    }
+
     public User read(String idUser) {
         String query = UserQueries.generateReadQuery(idUser);
         Result res = this.connect.execQuery(query);
