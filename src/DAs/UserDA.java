@@ -102,14 +102,15 @@ public class UserDA {
         return users;
     }
 
-    public ArrayList<Courier> readCouriers() {
-        String query = UserQueries.generateReadCourierQuery();
-        Result res = this.connect.execQuery(query);
+    public ArrayList<Courier> getAllCouriers() {
+        // diagram 10 - view all couriers
+        String query = "SELECT idUser, fullName, phone, address, vehicleType, vehiclePlate FROM users WHERE role = 'courier'";
+        ResultSet rs = this.connect.execQuery(query).getRs();
 
         ArrayList<Courier> couriers = new ArrayList<Courier>();
         try {
-            while (res.getRs().next()) {
-                Courier courier = Courier.fromResultSet(res.getRs());
+            while (rs.next()) {
+                Courier courier = Courier.fromResultSet(rs);
                 couriers.add(courier);
             }
         } catch (SQLException e) {

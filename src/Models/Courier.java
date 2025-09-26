@@ -45,22 +45,9 @@ public class Courier extends User {
         return returnHashMap;
     }
 
-    public static ArrayList<HashMap<String, Object>> getCouriers() {
-        ArrayList<Courier> couriers = userDA.readCouriers();
-        ArrayList<HashMap<String, Object>> returnCouriers = new ArrayList<HashMap<String, Object>>();
-
-        for (int i = 0; i < couriers.size(); i++) {
-            HashMap<String, Object> hs = new HashMap<String, Object>();
-            hs.put("idCourier", couriers.get(i).getIdUser());
-            hs.put("name", couriers.get(i).getFullName());
-            hs.put("email", couriers.get(i).getEmail());
-            hs.put("phone", couriers.get(i).getPhone());
-            hs.put("address", couriers.get(i).getAddress());
-            hs.put("vehicleType", couriers.get(i).getVehicleType());
-            hs.put("vehiclePlate", couriers.get(i).getVehiclePlate());
-            returnCouriers.add(hs);
-        }
-
-        return returnCouriers;
+    public static ArrayList<Courier> getAllCouriers() {
+        // diagram 10 - view all couriers
+        ArrayList<Courier> couriers = userDA.getAllCouriers(); 
+        return couriers;
     }
 }

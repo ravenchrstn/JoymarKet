@@ -5,9 +5,6 @@ import java.util.ArrayList;
 import Models.Courier;
 
 public class CourierQueries {
-    public static String generateReadQuery(String idCourier) {
-        return "SELECT idUser, fullName, email, password, phone, address, role, vehicleType, vehiclePlate FROM users WHERE idUser = " + idCourier + " AND role = 'courier'" + " LIMIT 1";
-    }
 
     public static String generateReadQuery(ArrayList<String> idsCourier) {
         String query = "SELECT idUser, fullName, email, password, phone, address, role, vehicleType, vehiclePlate FROM users WHERE role = 'courier' AND idUser in (";
