@@ -1,27 +1,23 @@
 package Controller;
 
+import java.util.ArrayList;
+
+import Models.Courier;
 import Models.Customer;
-import Validators.UserValidators;
 
 public class UserHandler {
-    private UserValidators userValidators;
 
-    public UserHandler(UserValidators userValidators) {
-        this.userValidators = userValidators;
+    public ArrayList<Courier> getAllCouriers() {
+        // diagram 10 - view all couriers
+        return Courier.getAllCouriers();
     }
     
-    public String registerCourier(String fullName, String email, String password, String confirm_password, String phone, String address) {
-        // register account, diagram 1
-        
-        // validate input field
-        String errorMessage = this.userValidators.validateRegister(fullName, email, password, confirm_password, phone, address);
-        if (errorMessage != null) {
-            return errorMessage;
-        }
+    public String registerCustomer(String fullName, String email, String password, String confirm_password, String phone, String address) {
+        // diagram 1 - register account
 
-        String id = Customer.register(fullName, email, password, phone, address);
+        String id = Customer.createCustomer(fullName, email, password, confirm_password, phone, address);
         if (id == null) {
-            return "Your account has not been registered.";
+            return "Registration failed. Please try again.";
         }
 
         return "Your account has successfully been registered!";

@@ -1,37 +1,26 @@
 package Controller;
 
-import Models.Courier;
+import java.util.ArrayList;
+
 import Models.Delivery;
 import Models.OrderHeader;
-import Validators.BusinessValidators;
-
 public class DeliveryHandler {
-    private BusinessValidators bv;
-
-    public DeliveryHandler(BusinessValidators bv) {
-        this.bv = bv;
-    }
 
     public OrderHeader getOrderHeader(String idOrder) {
         return getOrderHeader(idOrder);
     }
+    
+    public ArrayList<OrderHeader> getAssignedDeliveries(String idCourier) {
+        // diagram 13 - view assigned deliveries
+
+        return OrderHeader.findAssignedDeliveries(idCourier);
+    }
 
     public String processDelivery(String idOrder, String idCourier) {
         // diagram 12 - assign order to courier
-        Courier oh = Courier.getCourier(idCourier);
-        
-        // validation
-        if (this.bv.doesCourierExist(oh) == false) {
-            return "courier does not exist.";
-        } else if (this.bv.isCourier(oh) == false) {
-            return "Not a courier.";
-        }
-
-        if (this.bv.doesOrderExist(idOrder) == false) {
-            return "order does not exist.";
-        }
-        
-        String status = Delivery.updateStatus(idOrder, idCourier, "in progress");
-        return status;
+    
+        return Delivery.updateStatus(idOrder, idCourier);
     }
+
+    // commit message: fix view assign order to courier feature, delete unnecessary business validators and insert them into models, and change wrong file validation location, clean code, and fix wrong return in data access, fix view order histories feature.
 }

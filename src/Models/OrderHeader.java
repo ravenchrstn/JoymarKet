@@ -33,14 +33,25 @@ public class OrderHeader {
         return null;
     }
 
-    public static String findIdOrder(String idOrder) {
-        // diagram 12 - business validators
-        return orderHeaderDA.findIdOrder(idOrder);
+    public static ArrayList<OrderHeader> findAssignedDeliveries(String idCourier) {
+        // diagram 13 - view assigned deliveries
+
+        // validate
+        Courier courier = Courier.getCourier(idCourier);
+        if (courier.getIdUser() == null) throw new IllegalArgumentException("courier not found.");
+        else if (courier.getRole().equals("courier") == false) throw new IllegalArgumentException("not a courier.");
+        return orderHeaderDA.findAssignedDeliveries(idCourier);
+
     }
 
-    public static ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
+    public static boolean doesExist(String idOrder) {
+        // diagram 12 - business validators
+        return orderHeaderDA.existsById(idOrder);
+    }
+
+    public static ArrayList<HashMap<String, Object>> findCustomerOrderHistories(String idCustomer) {
         // diagram 8 - view order history
-        return orderHeaderDA.getCustomerOrderHistories(idCustomer);
+        return orderHeaderDA.findCustomerOrderHistories(idCustomer);
     }
 
     public static HashMap<String, Object> createOrderHeader(String idCustomer, String idPromo) {
@@ -55,37 +66,9 @@ public class OrderHeader {
         return orderHeader;
     }
 
-    public static boolean editOrderHeaderStatus(String idOrder, String status) {
-        int rowsAffected = orderHeaderDA.updateStatus(idOrder, status);
-
-        if (rowsAffected > 0) return true;
-        return false;
-    }
-
-    public static ArrayList<HashMap<String, Object>> getAllOrders() {
+    public static ArrayList<HashMap<String, Object>> findAllOrders() {
         // diagram 11 - view all orders
-        return orderHeaderDA.getAllOrders();
-    }
-
-    public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {   
-        // diagram 7
-        
-        Product product = Product.getProduct(idProduct);
-        this.totalAmount += product.getPrice() * qty;
-
-        // ini hanya mengubah totalAmount
-        orderHeaderDA.saveDA(idOrder, this.totalAmount); 
-
-        // membuat order detail baru
-        OrderDetail.saveOrderDetail(this.idOrder, idProduct, qty);
-
-        HashMap<String, Object> returnHashMap = new HashMap<String, Object>();
-        returnHashMap.put("idOrder", this.idOrder);
-        returnHashMap.put("idCustomer", this.idCustomer);
-        returnHashMap.put("idPromo", this.idPromo);
-        returnHashMap.put("orderedAt", this.orderedAt);
-        returnHashMap.put("totalAmount", this.totalAmount);
-        return returnHashMap;
+        return orderHeaderDA.findAllOrders();
     }
 
     public String getIdOrder() {

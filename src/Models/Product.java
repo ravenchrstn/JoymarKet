@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import DAs.ProductDA;
+import Helpers.Converting;
 
 public class Product {
     private String idProduct, name, category;
@@ -31,8 +32,10 @@ public class Product {
         return null;
     }
 
-    public static Product getProduct(String idProduct) { // HERE
-        // return objek Product karena sudah mencover semua informasi yang harus dikembalikan
+    public static Product getProduct(String idProduct) {
+        Integer idProductInteger = Converting.toInteger(idProduct);
+        if (idProductInteger == null || idProductInteger <= 0) return null;
+
         return productDA.read(idProduct);
     }
 

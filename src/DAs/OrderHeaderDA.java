@@ -6,10 +6,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import App.Connect;
-import Helpers.Result;
-import Models.Admin;
-import Models.Courier;
-import Models.Customer;
 import Models.OrderHeader;
 import Queries.OrderHeaderQueries;
 
@@ -22,7 +18,7 @@ public class OrderHeaderDA {
         return orderHeaderDA;
     }
 
-    public ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
+    public ArrayList<HashMap<String, Object>> findCustomerOrderHistories(String idCustomer) {
         // diagram 8 - view order history
         String query = "SELECT oh.idOrder, oh.orderedAt, oh.totalAmount, od.qty, p.idProduct, p.name FROM order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct JOIN (SELECT idOrder, MIN(idProduct) FROM order_details GROUP BY idOrder) od_single ON od.idOrder = od_single.idOrder AND od_single.idProduct = od.idProduct WHERE oh.idCustomer = " + idCustomer + " ORDER BY oh.orderedAt DESC;";
         ResultSet rs = connect.execQuery(query).getRs();
@@ -45,7 +41,7 @@ public class OrderHeaderDA {
         return al;
     }
 
-    public ArrayList<HashMap<String, Object>> getAllOrders() {
+    public ArrayList<HashMap<String, Object>> findAllOrders() {
         // diagram 11 - view all orders
         String query = "SELECT oh.idOrder, oh.orderedAt, oh.totalAmount, oh.status, od.qty, p.idProduct, p.name FROM order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct JOIN (SELECT idOrder, MIN(idProduct) FROM order_details GROUP BY idOrder) od_single ON od.idOrder = od_single.idOrder AND od_single.idProduct = od.idProduct ORDER BY oh.orderedAt DESC;";
         ResultSet rs = connect.execQuery(query).getRs();
@@ -70,30 +66,39 @@ public class OrderHeaderDA {
         return al;
     }
 
-    public int saveDA(String idOrder, Double totalAmount) {
-        // update totalAmount
-        String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, totalAmount);
-        return (int) connect.execUpdate(query).get("rowsAffected");
-    }
-
     // public int saveDA(String idOrder, String idProduct, int qty) {
     //     // update total amount
     //     String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, idProduct, qty);
     //     return (int) connect.execUpdate(query).get("rowsAffected");
     // }
 
-    public String findIdOrder(String idOrder) {
+    public boolean existsById(String idOrder) {
         // diagram 12 - business validators
         String query = "SELECT idOrder FROM order_headers";
         ResultSet rs = connect.execQuery(query).getRs();
-        String idOrderReturn = null;
+        
         try {
-            idOrderReturn = rs.getString("idOrder");
+            return rs.next();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public ArrayList<OrderHeader> findAssignedDeliveries(String idCourier) {
+        String query = "SELECT idOrder, idCustomer, status, orderedAt, totalAmount FROM order_headers oh JOIN deliveries d ON oh.idOrder = d.idOrder WHERE d.idCourier = " + idCourier + ";";
+        ResultSet rs = connect.execQuery(query).getRs();
+        ArrayList<OrderHeader> ohs = new ArrayList<OrderHeader>();
+        try {
+            while (rs.next()) {
+                OrderHeader oh = OrderHeader.fromResultSet(rs);
+                ohs.add(oh);
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        
-        return idOrderReturn;
+
+        return ohs;
     }
 
     public Double readTotalAmount(String idOrder) {
@@ -104,10 +109,5 @@ public class OrderHeaderDA {
             e.printStackTrace();
         }
         return null;
-    }
-
-    public int updateStatus(String idOrder, String status) {
-        String query = OrderHeaderQueries.generateChangeStatusQuery(idOrder, status);
-        return (int) connect.execUpdate(query).get("rowsAffected");
     }
 }

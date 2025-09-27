@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import DAs.DeliveryDA;
-import Helpers.Result;
 
 public class Delivery {
     private String idOrder, idCourier, status;
@@ -26,28 +25,26 @@ public class Delivery {
         return null;
     }
 
-    public static String updateStatus(String idOrder, String idCourier, String status) {
+    public static String updateStatus(String idOrder, String idCourier) {
         // diagram 12 - assign order to courier
-        Result res = deliveryDA.updateStatus(idOrder, idCourier, status);
-        String statusReturn = null;
-        try {
-            statusReturn = res.getRs().getString(status);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return statusReturn;
+
+        // validation
+        Courier courier = Courier.getCourier(idCourier);
+        if (courier.getIdUser() == null) throw new IllegalArgumentException("courier not found.");
+        else if (courier.getRole().equals("courier") == false) throw new IllegalArgumentException("not a courier.");
+
+        if (OrderHeader.doesExist(idOrder) == false) throw new IllegalArgumentException("order does not exist.");
+
+        String status = deliveryDA.findStatus(idOrder, idCourier);
+        if (status.equals("pending")) return deliveryDA.updateStatus(idOrder, idCourier, "in progress");
+        else if (status.equals("in progress")) return deliveryDA.updateStatus(idOrder, idCourier, "delivered");
+        return null;
     }
 
     public Delivery editDeliveryStatus(String idOrder, String status) {
         // diagram 14
-        deliveryDA.saveStatusDA(idOrder, status);
-        this.status = status;
-
+        
         return this;
-    }
-
-    public Delivery getDelivery(String idOrder, String idCourier) {
-        return fromResultSet(deliveryDA.read(idOrder, idCourier).getRs());
     }
 
     public String getIdOrder() {

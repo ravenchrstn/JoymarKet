@@ -1,10 +1,8 @@
 package DAs;
 
-import java.util.HashMap;
-
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import App.Connect;
-import Helpers.Result;
-import Queries.DeliveryQueries;
 
 public class DeliveryDA {
     private static DeliveryDA deliveryDA;
@@ -15,19 +13,29 @@ public class DeliveryDA {
         return deliveryDA;
     }
 
-    public Result read(String idOrder, String idCourier) {
-        String query = DeliveryQueries.generateReadQuery(idOrder, idCourier);
-        return connection.execQuery(query);
+    public String findStatus(String idOrder, String idCourier) {
+        String query = "SELECT status FROM deliveries WHERE idOrder = " + idOrder + " AND idCourier = " + idCourier + ";";
+        String status = null;
+        try {
+            status = this.connection.execQuery(query).getRs().getString("status");
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return status;
     }
 
-    public HashMap<String, Object> saveStatusDA(String idOrder, String status) {
-        String query = DeliveryQueries.generateUpdateStatusQuery(idOrder, status);
-        return connection.execUpdate(query);
-    }
-
-    public Result updateStatus(String idOrder, String idCourier, String status) {
+    public String updateStatus(String idOrder, String idCourier, String status) {
         // diagram 12 - assign order to courier
         String query = "INSERT INTO deliveries (idOrder, idCourier, status) VALUES ('" + idOrder + "', '" + idCourier + "', '" + status + "');";
-        return connection.execQuery(query);
+        ResultSet rs = connection.execQuery(query).getRs();
+        String statusReturn = null;
+
+        try {
+            statusReturn = rs.getString(status);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return statusReturn;
     }
 }

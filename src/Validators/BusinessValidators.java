@@ -2,7 +2,6 @@ package Validators;
 
 import Models.Courier;
 import Models.Customer;
-import Models.OrderHeader;
 import Models.Product;
 import Models.Promo;
 import Models.User;
@@ -32,13 +31,6 @@ public class BusinessValidators {
 
     public boolean validateProductCountToCart(String idProduct, Integer count) {
         if (count > Product.getAvailableProduct(idProduct).getStock()) return false;
-        return true;
-    }
-
-    public boolean doesOrderExist(String idOrder) {
-        // diagram 12 - business validators
-        String idOrderReturn = OrderHeader.findIdOrder(idOrder);
-        if (idOrderReturn == null) return false;
         return true;
     }
 

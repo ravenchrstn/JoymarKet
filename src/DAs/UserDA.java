@@ -3,7 +3,6 @@ package DAs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.function.Function;
 
 import App.Connect;
@@ -133,21 +132,5 @@ public class UserDA {
             e.printStackTrace();
         }
         return couriers;
-    }
-
-    public boolean topUpBalance(String idCustomer, Double newBalance) {
-        String query = UserQueries.generateUpdateQuery(idCustomer, newBalance);
-        HashMap<String, Object> hashMap = this.connect.execUpdate(query);
-        int rowsAffected = (int) hashMap.get("rowsAffected");
-
-        if (rowsAffected <= 0) return false;
-        return true;
-    }
-
-    public int saveDA(String idUser, String fullName, String phone, String address) {
-        // edit profile
-        HashMap<String, Object> hashMap = this.connect.execUpdate(UserQueries.generateUpdateQuery(idUser, fullName, phone, address));
-        int rowsAffected = (int) hashMap.get("rowsAffected");
-        return rowsAffected;
     }
 }

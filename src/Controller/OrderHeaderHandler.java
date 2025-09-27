@@ -18,7 +18,7 @@ public class OrderHeaderHandler {
 
     public ArrayList<HashMap<String, Object>> getCustomerOrderHistories(String idCustomer) {
         // diagram 8 - view order history
-        return OrderHeader.getCustomerOrderHistories(idCustomer);
+        return OrderHeader.findCustomerOrderHistories(idCustomer);
     }
 
     public Promo getPromo(String code) {
@@ -27,12 +27,12 @@ public class OrderHeaderHandler {
     }
 
     public HashMap<String, Object> saveDataOrderHeader(String idProduct, int qty) {
-        // diagram 7, belum jadi
+        // diagram 7
         return saveDataOrderHeader(idProduct, qty);
     }
 
     public ArrayList<HashMap<String, Object>> getAllOrders() {
         // diagram 11 - view all orders
-        return OrderHeader.getAllOrders();
+        return OrderHeader.findAllOrders();
     }
 }
