@@ -3,6 +3,7 @@ package DAs;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.function.Function;
 
 import App.Connect;
@@ -22,26 +23,23 @@ public class UserDA {
         return userDA;
     }
 
-    public String registerCustomer(String fullName, String email, String password, String phone, String address) { 
+    public Integer insertCustomer(String fullName, String email, String password, String phone, String address) { 
         // diagram 1 - register account
         String query = "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", Customer, 0)";
         return this.connect.execUpdate(query);
     }
 
-    public Courier findCourierToValidate(String idCourier) {
-        // business validators
-        String query = "SELECT idUser, role FROM users WHERE role = 'courier'";
-        ResultSet rs = this.connect.execQuery(query).getRs();
-        Courier courier = null;
+    public HashMap<String, String> findCredentialsByEmail(String email) {
+        String query = "SELECT email, password FROM users WHERE email = " + email + ";";
+        Result rs = this.connect.execQuery(query);
+        HashMap<String, String> hm = new HashMap<>();
         try {
-            while (rs.next()) {
-                courier = Courier.fromResultSet(rs);
-            }
+            hm.put("email", rs.getRs().getString("email"));
+            hm.put("password", rs.getRs().getString("password"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return courier;
+        return hm;
     }
 
     public User read(String idUser) {
@@ -117,7 +115,7 @@ public class UserDA {
         return users;
     }
 
-    public ArrayList<Courier> getAllCouriers() {
+    public ArrayList<Courier> findAllCouriers() {
         // diagram 10 - view all couriers
         String query = "SELECT idUser, fullName, phone, address, vehicleType, vehiclePlate FROM users WHERE role = 'courier'";
         ResultSet rs = this.connect.execQuery(query).getRs();

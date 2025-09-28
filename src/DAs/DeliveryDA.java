@@ -13,8 +13,8 @@ public class DeliveryDA {
         return deliveryDA;
     }
 
-    public String findStatus(String idOrder, String idCourier) {
-        String query = "SELECT status FROM deliveries WHERE idOrder = " + idOrder + " AND idCourier = " + idCourier + ";";
+    public String findStatus(String idOrder, String idUser) {
+        String query = "SELECT status FROM deliveries WHERE idOrder = " + idOrder + " AND idUser = " + idUser + ";";
         String status = null;
         try {
             status = this.connection.execQuery(query).getRs().getString("status");
@@ -25,9 +25,9 @@ public class DeliveryDA {
         return status;
     }
 
-    public String updateStatus(String idOrder, String idCourier, String status) {
+    public String updateStatus(String idOrder, String idUser, String status) {
         // diagram 12 - assign order to courier
-        String query = "INSERT INTO deliveries (idOrder, idCourier, status) VALUES ('" + idOrder + "', '" + idCourier + "', '" + status + "');";
+        String query = "INSERT INTO deliveries (idOrder, idUser, status) VALUES ('" + idOrder + "', '" + idUser + "', '" + status + "');";
         ResultSet rs = connection.execQuery(query).getRs();
         String statusReturn = null;
 

@@ -10,8 +10,8 @@ import Helpers.Checking;
 public class Customer extends User {
     private Double balance;
 
-    public Customer(String idCustomer, String fullName, String email, String password, String phone, String address, Double balance) {
-        super(idCustomer, fullName, email, password, phone, address, "Customer");
+    public Customer(String idUser, String fullName, String email, String password, String phone, String address, Double balance) {
+        super(idUser, fullName, email, password, phone, address, "Customer");
 
         if (balance != 0) this.balance = balance;
         else this.balance = 0.0;
@@ -27,10 +27,8 @@ public class Customer extends User {
         return null;
     }
 
-    public static String createCustomer(String fullName, String email, String password, String confirm_password, String phone, String address) { 
+    public static String registerCustomer(String fullName, String email, String password, String confirm_password, String phone, String address) { 
         // diagram 1 - register account
-
-        // validate input field
 
         // validate fullName, checking cannot by empty
         if (fullName == null || fullName.isEmpty()) return "Fullname field is empty. Try input something.";
@@ -53,8 +51,9 @@ public class Customer extends User {
         // validate address
         if (address == null || address.isEmpty()) return "Address field is empty. Try input something.";
 
-        String idUser = userDA.registerCustomer(fullName, email, password, phone, address);
-        return idUser;
+        Integer affectedRows = userDA.insertCustomer(fullName, email, password, phone, address);
+        if (affectedRows <= 0) return "Registration failed. Please try again.";
+        return null;
     }
 
     public int editProfile(String fullName, String email, String phone, String address) {
@@ -62,8 +61,8 @@ public class Customer extends User {
         // return userDA.saveDA(this.idUser, fullName, phone, address);
     }
 
-    public static Customer getCustomer(String idCustomer) { // HERE
-        return (Customer) userDA.read(idCustomer);
+    public static Customer getCustomer(String idUser) { // HERE
+        return (Customer) userDA.read(idUser);
     }
 
     // public static ArrayList<Customer> getCustomer(ArrayList<String> idsCustomer) {
@@ -84,7 +83,7 @@ public class Customer extends User {
         OrderHeader oh = OrderHeader.createOrderHeader();
         HashMap<String, Object> hs = new HashMap<String, Object>();
         hs.put("OrderHeader", oh);
-        hs.put("idCustomer", this.idUser);
+        hs.put("idUser", this.idUser);
 
         return hs;
     }
@@ -94,7 +93,7 @@ public class Customer extends User {
         HashMap<String, Object> returnHashMap = new HashMap<String, Object>();
         CartItem cartItem = CartItem.createCartItem();
         returnHashMap.put("CartItem", cartItem);
-        returnHashMap.put("idCustomer", this.idUser);
+        returnHashMap.put("idUser", this.idUser);
 
         return returnHashMap;
     }

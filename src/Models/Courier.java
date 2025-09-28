@@ -7,8 +7,8 @@ import java.util.ArrayList;
 public class Courier extends User {
     private String vehicleType, vehiclePlate;
 
-    public Courier(String idCourier, String fullName, String email, String password, String phone, String address, String vehicleType, String vehiclePlate) {
-        super(idCourier, fullName, email, password, phone, address, "Courier");
+    public Courier(String idUser, String fullName, String email, String password, String phone, String address, String vehicleType, String vehiclePlate) {
+        super(idUser, fullName, email, password, phone, address, "Courier");
         this.vehicleType = vehicleType;
         this.vehiclePlate = vehiclePlate;
     }
@@ -30,14 +30,9 @@ public class Courier extends User {
 
         return null;
     }
-    
-    public static Courier getCourier(String idCourier) {   
-        return userDA.findCourierToValidate(idCourier);
-    }
 
-    public static ArrayList<Courier> getAllCouriers() {
+    public static ArrayList<Courier> findAll() {
         // diagram 10 - view all couriers
-        ArrayList<Courier> couriers = userDA.getAllCouriers(); 
-        return couriers;
+        return userDA.findAllCouriers();
     }
 }

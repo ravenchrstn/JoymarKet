@@ -18,9 +18,9 @@ public class OrderHeaderDA {
         return orderHeaderDA;
     }
 
-    public ArrayList<HashMap<String, Object>> findCustomerOrderHistories(String idCustomer) {
+    public ArrayList<HashMap<String, Object>> findOrderHistoriesByIdUser(String idUser) {
         // diagram 8 - view order history
-        String query = "SELECT oh.idOrder, oh.orderedAt, oh.totalAmount, od.qty, p.idProduct, p.name FROM order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct JOIN (SELECT idOrder, MIN(idProduct) FROM order_details GROUP BY idOrder) od_single ON od.idOrder = od_single.idOrder AND od_single.idProduct = od.idProduct WHERE oh.idCustomer = " + idCustomer + " ORDER BY oh.orderedAt DESC;";
+        String query = "SELECT oh.idOrder, oh.orderedAt, oh.totalAmount, od.qty, p.idProduct, p.name FROM order_headers oh JOIN order_details od ON oh.idOrder = od.idOrder JOIN products p ON od.idProduct = p.idProduct JOIN (SELECT idOrder, MIN(idProduct) FROM order_details GROUP BY idOrder) od_single ON od.idOrder = od_single.idOrder AND od_single.idProduct = od.idProduct WHERE oh.idUser = " + idUser + " ORDER BY oh.orderedAt DESC;";
         ResultSet rs = connect.execQuery(query).getRs();
         ArrayList<HashMap<String, Object>> al = new ArrayList<HashMap<String, Object>>();
 
@@ -66,27 +66,9 @@ public class OrderHeaderDA {
         return al;
     }
 
-    // public int saveDA(String idOrder, String idProduct, int qty) {
-    //     // update total amount
-    //     String query = OrderHeaderQueries.generateUpdateTotalAmountQuery(idOrder, idProduct, qty);
-    //     return (int) connect.execUpdate(query).get("rowsAffected");
-    // }
-
-    public boolean existsById(String idOrder) {
-        // diagram 12 - business validators
-        String query = "SELECT idOrder FROM order_headers";
-        ResultSet rs = connect.execQuery(query).getRs();
-        
-        try {
-            return rs.next();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    public ArrayList<OrderHeader> findAssignedDeliveries(String idCourier) {
-        String query = "SELECT idOrder, idCustomer, status, orderedAt, totalAmount FROM order_headers oh JOIN deliveries d ON oh.idOrder = d.idOrder WHERE d.idCourier = " + idCourier + ";";
+    public ArrayList<OrderHeader> findAssignedDeliveriesByIdUser(String idUser) {
+        // diagram 13 - view assigned deliveries
+        String query = "SELECT idOrder, idUser, status, orderedAt, totalAmount FROM order_headers oh JOIN deliveries d ON oh.idOrder = d.idOrder JOIN users u ON d.idUser = u.idUser WHERE u.role = 'courier' AND d.idUser = " + idUser + ";";
         ResultSet rs = connect.execQuery(query).getRs();
         ArrayList<OrderHeader> ohs = new ArrayList<OrderHeader>();
         try {

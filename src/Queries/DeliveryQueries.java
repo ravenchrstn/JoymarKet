@@ -5,7 +5,7 @@ public abstract class DeliveryQueries {
         return "UPDATE deliveries SET status = " + status + " WHERE idOrder = " + idOrder;
     }
 
-    public static String generateReadQuery(String idOrder, String idCourier) {
-        return "SELECT idOrder, idCourier, status FROM deliveries WHERE idOrder = " + idOrder + " AND idCourier = " + idCourier;
+    public static String generateReadQuery(String idOrder, String idUser) {
+        return "SELECT idOrder, idUser, status FROM deliveries WHERE idOrder = " + idOrder + " AND idUser = " + idUser;
     }
 }

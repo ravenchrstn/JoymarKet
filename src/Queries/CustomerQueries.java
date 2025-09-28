@@ -4,8 +4,8 @@ import java.util.ArrayList;
 
 public abstract class CustomerQueries {
 
-    public static String generateReadQuery(String idCustomer) {
-        return "SELECT idUser, fullName, email, password, phone, address, role, balance FROM users WHERE idUser = " + idCustomer + " AND role = 'customer'" + " LIMIT 1";
+    public static String generateReadQuery(String idUser) {
+        return "SELECT idUser, fullName, email, password, phone, address, role, balance FROM users WHERE idUser = " + idUser + " AND role = 'customer'" + " LIMIT 1";
     }
 
     public static String generateReadQuery(ArrayList<String> idsCustomer) {

@@ -11,9 +11,9 @@ public class CartItemDA {
         return cartItemDA;
     }
 
-    public String delete(String idCustomer, String idProduct) {
+    public Integer deleteById(String idUser, String idProduct) {
         // diagram 5 - remove cart item
-        String query = "DELETE FROM cart_items WHERE idCustomer = " + idCustomer + " AND idProduct = " + idProduct + ";";
+        String query = "DELETE FROM cart_items WHERE idUser = " + idUser + " AND idProduct = " + idProduct + ";";
         return this.connect.execUpdate(query);
     }
 }

@@ -1,6 +1,6 @@
 package Models;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 
 import DAs.UserDA;
 
@@ -49,19 +49,14 @@ public abstract class User {
         this.idUser = idUser;
     }
 
-    public static User getUser(String idUser) { // HERE
-        // factories is to make objects that are used by children.
-        return userDA.read(idUser);
-    }
+    public static String login(String email, String password) {
+        if (email.equals("") || email == null) return "Email field is empty. Try input something.";
 
-    public static ArrayList<User> getUser(ArrayList<String> idsUser) { // HERE
-        // factories is to make objects that are used by children.
-        return userDA.read(idsUser);
-    }
+        if (password.equals("") || password == null) return "Password field is empty. Try input something.";
 
-    // public static User saveDataUser(String fullName, String email, String password, String phone, String address) { 
-        // we don't make this because it is strange that there is no way to modify or add emergencyContact from Admin, vehicleType and VehiclePlate from Courier.
-        // singkatnya, untuk apa buat insert fullName, email, password, phone, address saja tanpa menyimpan informasi yang juga dimiliki childrennya.
-        // kalau kita register menggunakan informasi dari parameter saja, malahan nantinya admin tidak mempunyai emergencyContact, dst
-    // }
+        HashMap<String, String> hm = userDA.findCredentialsByEmail(email);
+        if (hm.get("email").equals(email) == false) return "Email is not found. Please try another email or register.";
+        if (hm.get("password").equals(password) == false) return "Password is wrong.";
+        return null;
+    }
 }

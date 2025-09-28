@@ -3,61 +3,26 @@ package Models;
 import DAs.CartItemDA;
 
 public class CartItem {
-    private String idCustomer, idProduct;
+    private String idUser, idProduct;
     private int count;
     protected static final CartItemDA cartItemDA = CartItemDA.getCartItemDA();
 
-    public CartItem createCartItem(String idCustomer, String idProduct) {
-        this.idCustomer = idCustomer;
+    public CartItem createCartItem(String idUser, String idProduct) {
+        this.idUser = idUser;
         this.idProduct = idProduct;
         this.count = 1;
 
         return this;
     }
 
-    public Product getProduct(String idProduct) {
-        // diagram 3
-        // Product product = Product.getData
-        return null;
-    }
-
     public static CartItem createCartItem() {
         return new CartItem();
     }
 
-    public static String deleteCartItem(String idCustomer, String idProduct) {
+    public static String delete(String idUser, String idProduct) {
         // diagram 5 - remove cart item
-        return cartItemDA.delete(idCustomer, idProduct);
+        Integer rowsAffected = cartItemDA.deleteById(idUser, idProduct);
+        if (rowsAffected <= 0) return "Cart is not deleted. Something is wrong.";
+        return null;
     }
 }
-
-// public boolean deleteCartItem(String idCustomer, String idProduct) {
-//     if (this.idCustomer == idCustomer && this.idProduct == idProduct) {
-//         // kode mysql
-
-//         return true;
-//     }
-
-//     return false;
-// }
-
-// public boolean editCartItem(String idCustomer, String idProduct, int count) {
-//     this.idCustomer = idCustomer;
-//     this.idProduct = idProduct;
-//     this.count = count;
-
-//     // kode mysql
-//     return true;
-// }
-
-// public String getIdCustomer() {
-//     return idCustomer;
-// }
-
-// public String getIdProduct() {
-//     return idProduct;
-// }
-
-// public int getCount() {
-//     return count;
-// }

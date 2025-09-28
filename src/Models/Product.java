@@ -3,10 +3,7 @@ package Models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import DAs.ProductDA;
-import Helpers.Converting;
 
 public class Product {
     private String idProduct, name, category;
@@ -32,16 +29,9 @@ public class Product {
         return null;
     }
 
-    public static Product getProduct(String idProduct) {
-        Integer idProductInteger = Converting.toInteger(idProduct);
-        if (idProductInteger == null || idProductInteger <= 0) return null;
-
-        return productDA.read(idProduct);
-    }
-
-    public static ArrayList<Product> getProducts() {
+    public static ArrayList<Product> findProducts() {
         // diagram 2 - view products
-        return productDA.getProducts();
+        return productDA.findAll();
     }
 
     public String getIdProduct() {
@@ -62,13 +52,5 @@ public class Product {
 
     public int getStock() {
         return stock;
-    }
-
-    public static Product getAvailableProduct(String idProduct) { // HERE
-        return productDA.readAvailable(idProduct);
-    }
-
-    public static HashMap<String, Object> editProductStock(String idProduct, int stock) { // HERE
-        return productDA.saveDA(idProduct, stock);
     }
 }

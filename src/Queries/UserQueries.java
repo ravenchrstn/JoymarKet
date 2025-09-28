@@ -13,8 +13,8 @@ public abstract class UserQueries {
         return "UPDATE users SET fullName = " + fullName + ", phone = " + phone + ", address = " + address + " WHERE idUser = " + idUser;
     }
 
-    public static String generateUpdateQuery(String idCustomer, Double newBalance) {
-        return "UPDATE users SET balance = " + newBalance + " WHERE idUser = " + idCustomer;
+    public static String generateUpdateQuery(String idUser, Double newBalance) {
+        return "UPDATE users SET balance = " + newBalance + " WHERE idUser = " + idUser;
     }
 
     public static String generateReadQuery(String idUser) {

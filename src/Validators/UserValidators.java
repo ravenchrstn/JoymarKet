@@ -25,10 +25,4 @@ public class UserValidators {
         if (status.equals("Pending") || status.equals("In Progress") || status.equals("Delivered")) return true;
         return false;
     }
-
-    public boolean validateLogin(String email, String password) {
-        if (email == null) return false;
-        if (password == null) return false;
-        return true;
-    }
 }

@@ -7,13 +7,11 @@ import Models.CartItem;
 public class CartItemHandler {
     public HashMap<String, Object> getProduct(String idProduct) throws IOException {
         // diagram 3
-
         return null;
     }
 
-    public String deleteCartItem(String idCustomer, String idProduct) {
+    public String delete(String idUser, String idProduct) {
         // diagram 5 - remove cart item
-
-        return CartItem.deleteCartItem(idCustomer, idProduct);
+        return CartItem.delete(idUser, idProduct);
     }
 }

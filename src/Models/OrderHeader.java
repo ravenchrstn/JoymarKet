@@ -9,14 +9,14 @@ import java.util.HashMap;
 import DAs.OrderHeaderDA;
 
 public class OrderHeader {
-    private String idOrder, idCustomer, idPromo, status;
+    private String idOrder, idUser, idPromo, status;
     private Date orderedAt;
     private Double totalAmount;
     private static final OrderHeaderDA orderHeaderDA = OrderHeaderDA.getOrderHeaderDA();
 
-    public OrderHeader(String idOrder, String idCustomer, String idPromo, String status, Date orderedAt, Double totalAmount) {
+    public OrderHeader(String idOrder, String idUser, String idPromo, String status, Date orderedAt, Double totalAmount) {
         this.idOrder = idOrder;
-        this.idCustomer = idCustomer;
+        this.idUser = idUser;
         this.idPromo = idPromo;
         this.status = status;
         this.orderedAt = orderedAt;
@@ -25,7 +25,7 @@ public class OrderHeader {
 
     public static OrderHeader fromResultSet(ResultSet rs) {
         try {
-            return new OrderHeader(rs.getString("idOrder"), rs.getString("idCustomer"), rs.getString("idPromo"), rs.getString("status"), rs.getDate("orderedAt"), rs.getDouble("totalAmount"));
+            return new OrderHeader(rs.getString("idOrder"), rs.getString("idUser"), rs.getString("idPromo"), rs.getString("status"), rs.getDate("orderedAt"), rs.getDouble("totalAmount"));
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -33,31 +33,20 @@ public class OrderHeader {
         return null;
     }
 
-    public static ArrayList<OrderHeader> findAssignedDeliveries(String idCourier) {
+    public static ArrayList<OrderHeader> findAssignedDeliveries(String idUser) {
         // diagram 13 - view assigned deliveries
-
-        // validate
-        Courier courier = Courier.getCourier(idCourier);
-        if (courier.getIdUser() == null) throw new IllegalArgumentException("courier not found.");
-        else if (courier.getRole().equals("courier") == false) throw new IllegalArgumentException("not a courier.");
-        return orderHeaderDA.findAssignedDeliveries(idCourier);
-
+        return orderHeaderDA.findAssignedDeliveriesByIdUser(idUser);
     }
 
-    public static boolean doesExist(String idOrder) {
-        // diagram 12 - business validators
-        return orderHeaderDA.existsById(idOrder);
-    }
-
-    public static ArrayList<HashMap<String, Object>> findCustomerOrderHistories(String idCustomer) {
+    public static ArrayList<HashMap<String, Object>> findCustomerOrderHistories(String idUser) {
         // diagram 8 - view order history
-        return orderHeaderDA.findCustomerOrderHistories(idCustomer);
+        return orderHeaderDA.findOrderHistoriesByIdUser(idUser);
     }
 
-    public static HashMap<String, Object> createOrderHeader(String idCustomer, String idPromo) {
+    public static HashMap<String, Object> createOrderHeader(String idUser, String idPromo) {
         HashMap<String, Object> hashMap = new HashMap<String, Object>();
-        hashMap.put("OrderHeader", new OrderHeader(null, idCustomer, idPromo, "Pending", null, 0.0));
-        hashMap.put("idCustomer", idCustomer);
+        hashMap.put("OrderHeader", new OrderHeader(null, idUser, idPromo, "Pending", null, 0.0));
+        hashMap.put("idUser", idUser);
         return hashMap;
     }
 
@@ -75,8 +64,8 @@ public class OrderHeader {
         return idOrder;
     }
 
-    public String getIdCustomer() {
-        return idCustomer;
+    public String getIdUser() {
+        return idUser;
     }
 
     public String getIdPromo() {

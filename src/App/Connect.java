@@ -39,17 +39,14 @@ public class Connect {
         return result;
     }
 
-    public String execUpdate(String query) {
-        String id = "-2";
+    public Integer execUpdate(String query) {
+        Integer rowsAffected = null;
         try {
-            int rowsAffected = this.st.executeUpdate(query);
-            if (rowsAffected <= 0) return "-1";
-
-            ResultSet rs = this.st.getGeneratedKeys();
-            id = rs.getString(1);
+            rowsAffected = this.st.executeUpdate(query);
+            if (rowsAffected <= 0) return null;
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return id;
+        return rowsAffected;
     }
 }
