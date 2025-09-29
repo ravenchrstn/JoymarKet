@@ -4,15 +4,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.Function;
 
 import App.Connect;
-import Helpers.Result;
-import Models.Admin;
+import Exceptions.NoRowsAffectedException;
 import Models.Courier;
 import Models.Customer;
-import Models.User;
-import Queries.UserQueries;
 
 public class UserDA {
     private Connect connect = Connect.getInstance();
@@ -23,111 +19,51 @@ public class UserDA {
         return userDA;
     }
 
-    public Integer insertCustomer(String fullName, String email, String password, String phone, String address) { 
-        // diagram 1 - register account
-        String query = "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", Customer, 0)";
-        return this.connect.execUpdate(query);
+    public void updateBalanceByIdUser(String idUser, Double newBalance) throws NoRowsAffectedException, SQLException {
+        // diagram 7 - checkout and place order
+        String query = "UPDATE users SET balance = " + newBalance + " WHERE idUser = " + idUser + ";";
+        HashMap<String, Object> hm = this.connect.execUpdate(query);
+        ResultSet rs = (ResultSet) hm.get("resultSet");
+        rs.next();
+        if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Balance is not updated. Please try again.");
     }
 
-    public HashMap<String, String> findCredentialsByEmail(String email) {
+    public Customer getCustomerByIdUser(String idUser) throws SQLException {
+        // diagram 7 - checkout and place order
+        String query = "SELECT idUser, fullName, email, password, phone, address, role FROM users WHERE role = 'customer' and idUser = " + idUser + ";";
+        ResultSet rs = this.connect.execQuery(query);
+        rs.next();
+        return Customer.fromResultSet(rs);
+    }
+
+    public void insertCustomer(String fullName, String email, String password, String phone, String address) throws NoRowsAffectedException, SQLException { 
+        // diagram 1 - register account
+        String query = "INSERT INTO users (fullName, email, password, phone, address, role, balance) VALUES (" + fullName + ", " + email + ", " + password + ", " + phone + ", " + address + ", Customer, 0)";
+        HashMap<String, Object> hm = this.connect.execUpdate(query);
+        ResultSet rs = (ResultSet) hm.get("resultSet");
+        rs.next();
+        if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Failed to create your account. Please try again.");
+    }
+
+    public HashMap<String, String> findCredentialsByEmail(String email) throws SQLException {
+        // login
         String query = "SELECT email, password FROM users WHERE email = " + email + ";";
-        Result rs = this.connect.execQuery(query);
+        ResultSet rs = this.connect.execQuery(query);
+        rs.next();
         HashMap<String, String> hm = new HashMap<>();
-        try {
-            hm.put("email", rs.getRs().getString("email"));
-            hm.put("password", rs.getRs().getString("password"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        hm.put("email", rs.getString("email"));
+        hm.put("password", rs.getString("password"));
         return hm;
     }
 
-    public User read(String idUser) {
-        String query = UserQueries.generateReadQuery(idUser);
-        Result res = this.connect.execQuery(query);
-        User user = null;
-        try {
-            while (res.getRs().next()) {
-                String role = res.getRs().getString("role");
-                if (role == "Customer") {
-                    user = Customer.fromResultSet(res.getRs());
-                } else if (role == "Courier") {
-                    user = Courier.fromResultSet(res.getRs());
-                } else if (role == "Admin") {
-                    user = Admin.fromResultSet(res.getRs());
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return user;
-    }
-
-    public ArrayList<User> read(ArrayList<String> idsUser) {
-        String query = UserQueries.generateReadQuery(idsUser);
-        Result res = this.connect.execQuery(query);
-        ArrayList<User> users = new ArrayList<User>();
-
-        try {
-            while (res.getRs().next()) {
-                String role = res.getRs().getString("role");
-                User user = null;
-                if (role == "Customer") {
-                    user = Customer.fromResultSet(res.getRs());
-                } else if (role == "Courier") {
-                    user = Courier.fromResultSet(res.getRs());
-                } else if (role == "Admin") {
-                    user = Admin.fromResultSet(res.getRs());
-                }
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return users;
-    }
-
-    public <R extends User> ArrayList<User> read(ArrayList<String> idsUser, Function<ResultSet, R> factories, Class<R> className) {
-        // membaca hanya dengan role tertentu
-        String query = "";
-        if (className == Customer.class) {
-            query = UserQueries.generateReadQuery(idsUser);
-        } else if (className == Admin.class) {
-            query = UserQueries.generateReadQuery(idsUser);
-        } else if (className == Courier.class) {
-            query = UserQueries.generateReadQuery(idsUser);
-        }
-        
-        Result res = this.connect.execQuery(query);
-        ArrayList<User> users = new ArrayList<User>();
-
-        try {
-            while (res.getRs().next()) {
-                User user = factories.apply(res.getRs());
-                users.add(user);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return users;
-    }
-
-    public ArrayList<Courier> findAllCouriers() {
+    public ArrayList<Courier> findAllCouriers() throws SQLException {
         // diagram 10 - view all couriers
         String query = "SELECT idUser, fullName, phone, address, vehicleType, vehiclePlate FROM users WHERE role = 'courier'";
-        ResultSet rs = this.connect.execQuery(query).getRs();
-
+        ResultSet rs = this.connect.execQuery(query);
         ArrayList<Courier> couriers = new ArrayList<Courier>();
-        try {
-            while (rs.next()) {
-                Courier courier = Courier.fromResultSet(rs);
-                couriers.add(courier);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
+        while (rs.next()) {
+            Courier courier = Courier.fromResultSet(rs);
+            couriers.add(courier);
         }
         return couriers;
     }

@@ -21,17 +21,12 @@ public class Courier extends User {
         return vehiclePlate;
     }
 
-    public static Courier fromResultSet(ResultSet rs) {
-        try {
-            return new Courier(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("vehicleType"), rs.getString("vehiclePlate"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static Courier fromResultSet(ResultSet rs) throws SQLException {
+        return new Courier(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("vehicleType"), rs.getString("vehiclePlate"));
 
-        return null;
     }
 
-    public static ArrayList<Courier> findAll() {
+    public static ArrayList<Courier> getAll() throws SQLException {
         // diagram 10 - view all couriers
         return userDA.findAllCouriers();
     }

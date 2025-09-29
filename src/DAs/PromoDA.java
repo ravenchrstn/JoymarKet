@@ -1,11 +1,13 @@
 package DAs;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.HashMap;
+
 import App.Connect;
-import Helpers.Result;
-import Queries.PromoQueries;
 
 public class PromoDA {
-    private Connect connection = Connect.getInstance();
+    private Connect connect = Connect.getInstance();
     private static PromoDA promoDA;
 
     public static PromoDA getPromoDA() {
@@ -13,13 +15,14 @@ public class PromoDA {
         return promoDA;
     }
 
-    public Result read(String idPromo) {
-        String query = PromoQueries.generateReadQuery(idPromo);
-        return this.connection.execQuery(query);
-    }
-
-    public Result readByCode(String code) {
-        String query = PromoQueries.generateReadByCodeQuery(code);
-        return this.connection.execQuery(query);
+    public HashMap<String, Object> getPromoInfoByCode(String code) throws SQLException {
+        // diagram 7 - checkout and place order
+        String query = "SELECT idPromo, discountPercentage FROM promos WHERE code = " + code + ";";
+        ResultSet rs = this.connect.execQuery(query);
+        rs.next();
+        HashMap<String, Object> promoInfo = new HashMap<>();
+        promoInfo.put("idPromo", rs.getString("idPromo"));
+        promoInfo.put("discountPercentage", rs.getDouble("discountPercentage"));
+        return promoInfo;
     }
 }

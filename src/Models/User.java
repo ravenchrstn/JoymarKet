@@ -1,12 +1,16 @@
 package Models;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 
 import DAs.UserDA;
+import Exceptions.InvalidInputException;
+import Exceptions.NoRowsAffectedException;
+import Exceptions.NotFoundException;
 
 public abstract class User {
     protected String idUser, fullName, email, password, phone, address, role;
-    protected static final UserDA userDA = UserDA.getUserDA(); // will be used from anywhere to run getUser() method
+    protected static final UserDA userDA = UserDA.getUserDA();
 
     public User(String idUser, String fullName, String email, String password, String phone, String address, String role) {
         this.idUser = idUser;
@@ -49,14 +53,19 @@ public abstract class User {
         this.idUser = idUser;
     }
 
-    public static String login(String email, String password) {
-        if (email.equals("") || email == null) return "Email field is empty. Try input something.";
+    public static void login(String email, String password) throws InvalidInputException, NotFoundException, SQLException {
+        // login
+        if (email.equals("") || email == null) throw new InvalidInputException("email field is empty.", "Email field is empty. Try input something.");
 
-        if (password.equals("") || password == null) return "Password field is empty. Try input something.";
+        if (password.equals("") || password == null) throw new InvalidInputException("password field is empty.", "Password field is empty. Try input something..");
 
         HashMap<String, String> hm = userDA.findCredentialsByEmail(email);
-        if (hm.get("email").equals(email) == false) return "Email is not found. Please try another email or register.";
-        if (hm.get("password").equals(password) == false) return "Password is wrong.";
-        return null;
+        if (hm.get("email").equals(email) == false) throw new NotFoundException("Email is not found. Please try another email or register.");
+        if (hm.get("password").equals(password) == false) throw new NotFoundException("Password is wrong.");
+    }
+
+    public static void updateBalanceByIdUser(String idUser, Double newBalance) throws NoRowsAffectedException, SQLException {
+        // diagram 7 - checkout and place order
+        userDA.updateBalanceByIdUser(idUser, newBalance);
     }
 }

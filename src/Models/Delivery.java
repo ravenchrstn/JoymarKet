@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import DAs.DeliveryDA;
+import Exceptions.NoRowsAffectedException;
 
 public class Delivery {
     private String idOrder, idUser, status;
@@ -15,22 +16,15 @@ public class Delivery {
         this.status = status;
     }
 
-    public static Delivery fromResultSet(ResultSet rs) {
-        try {
-            return new Delivery(rs.getString("idOrder"), rs.getString("idUser"), rs.getString("status"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public static Delivery fromResultSet(ResultSet rs) throws SQLException {
+        return new Delivery(rs.getString("idOrder"), rs.getString("idUser"), rs.getString("status"));
     }
 
-    public static String processDelivery(String idOrder, String idUser) {
+    public static void processDelivery(String idOrder, String idUser) throws NoRowsAffectedException, SQLException {
         // diagram 12 - assign order to courier
         String status = deliveryDA.findStatus(idOrder, idUser);
-        if (status.equals("pending")) return deliveryDA.updateStatus(idOrder, idUser, "in progress");
-        else if (status.equals("in progress")) return deliveryDA.updateStatus(idOrder, idUser, "delivered");
-        return null;
+        if (status.equals("pending")) deliveryDA.updateStatus(idOrder, idUser, "in progress");
+        else if (status.equals("in progress")) deliveryDA.updateStatus(idOrder, idUser, "delivered");
     }
 
     public String getIdOrder() {

@@ -15,18 +15,8 @@ public class Admin extends User {
         return emergencyContact;
     }
 
-    public static Admin fromResultSet(ResultSet rs) {
-        try {
-            return new Admin(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("emergencyContact"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+    public static Admin fromResultSet(ResultSet rs) throws SQLException {
+        return new Admin(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("emergencyContact"));
 
-        return null;
     }
-
-    public static Admin getAdmin(String idAdmin) { // HERE
-        return (Admin) userDA.read(idAdmin);
-    }
-
 }

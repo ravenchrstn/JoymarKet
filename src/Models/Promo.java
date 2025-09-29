@@ -2,6 +2,7 @@ package Models;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import DAs.PromoDA;
 
@@ -17,19 +18,13 @@ public class Promo {
         this.discountPercentage = discountPercentage;
     }
 
-    public static Promo fromResultSet(ResultSet rs) {
-        try {
-            return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public static Promo fromResultSet(ResultSet rs) throws SQLException {
+        return new Promo(rs.getString("idPromo"), rs.getString("code"), rs.getString("headline"), rs.getDouble("discountPercentage"));
     }
 
-    public static Promo getPromo(String code) {
-        // diagram 7
-        return fromResultSet(promoDA.readByCode(code).getRs());
+    public static HashMap<String, Object> getPromoInfoByCode(String code) throws SQLException {
+        // diagram 7 - checkout and place order
+        return promoDA.getPromoInfoByCode(code);
     }
 
     public String getIdPromo() {

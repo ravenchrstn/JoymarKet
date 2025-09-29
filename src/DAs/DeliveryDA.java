@@ -2,11 +2,14 @@ package DAs;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+
 import App.Connect;
+import Exceptions.NoRowsAffectedException;
 
 public class DeliveryDA {
     private static DeliveryDA deliveryDA;
-    private Connect connection = Connect.getInstance();
+    private Connect connect = Connect.getInstance();
 
     public static DeliveryDA getDeliveryDA() {
         if (deliveryDA == null) deliveryDA = new DeliveryDA();
@@ -14,28 +17,22 @@ public class DeliveryDA {
     }
 
     public String findStatus(String idOrder, String idUser) {
+        // diagram 12 - assign order to courier
         String query = "SELECT status FROM deliveries WHERE idOrder = " + idOrder + " AND idUser = " + idUser + ";";
-        String status = null;
         try {
-            status = this.connection.execQuery(query).getRs().getString("status");
+            return this.connect.execQuery(query).getString("status");
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-
-        return status;
     }
 
-    public String updateStatus(String idOrder, String idUser, String status) {
+    public void updateStatus(String idOrder, String idUser, String status) throws NoRowsAffectedException, SQLException {
         // diagram 12 - assign order to courier
-        String query = "INSERT INTO deliveries (idOrder, idUser, status) VALUES ('" + idOrder + "', '" + idUser + "', '" + status + "');";
-        ResultSet rs = connection.execQuery(query).getRs();
-        String statusReturn = null;
-
-        try {
-            statusReturn = rs.getString(status);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return statusReturn;
+        String query = "UPDATE deliveries SET status = " + status + " WHERE idUser = " + idUser + " AND idUser = " + idUser + ";";
+        HashMap<String, Object> hm = this.connect.execUpdate(query);
+        ResultSet rs = (ResultSet) hm.get("resultSet");
+        rs.next();
+        if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Failed to update status. The order may not exist.");
     }
 }

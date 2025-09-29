@@ -1,7 +1,7 @@
 package App;
 
 import java.sql.*;
-import Helpers.Result;
+import java.util.HashMap;
 
 public class Connect {
     private final String USERNAME = "root";
@@ -29,24 +29,20 @@ public class Connect {
         }
     }
 
-    public Result execQuery(String query) {
-        Result result = new Result();
+    public ResultSet execQuery(String query) {
         try {
-            result.setRs(st.executeQuery(query));
+            return st.executeQuery(query);
         } catch (SQLException e) {
             e.printStackTrace();
+            return null;
         }
-        return result;
     }
 
-    public Integer execUpdate(String query) {
-        Integer rowsAffected = null;
-        try {
-            rowsAffected = this.st.executeUpdate(query);
-            if (rowsAffected <= 0) return null;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return rowsAffected;
+    public HashMap<String, Object> execUpdate(String query) throws SQLException {
+        HashMap<String, Object> hm = new HashMap<>();
+        hm.put("rowsAffected", this.st.executeUpdate(query));
+        hm.put("resultSet", this.st.getGeneratedKeys());
+
+        return hm;
     }
 }

@@ -1,11 +1,20 @@
 package Models;
 
+import java.sql.SQLException;
+
 import DAs.OrderDetailDA;
+import Exceptions.NoRowsAffectedException;
 
 public class OrderDetail {
     private String idOrder, idProduct;
-    private int qty;
+    private Integer qty;
     public static final OrderDetailDA orderDetailDA = OrderDetailDA.getOrderDetailDA();
+    
+    public OrderDetail(String idOrder, String idProduct, Integer qty) {
+        this.idOrder = idOrder;
+        this.idProduct = idProduct;
+        this.qty = qty;
+    }
 
     public String getIdOrder() {
         return idOrder;
@@ -15,8 +24,13 @@ public class OrderDetail {
         return idProduct;
     }
 
-    public int getQty() {
+    public Integer getQty() {
         return qty;
+    }
+
+    public static void createOrderDetail(String idOrder, String idProduct, Integer qty) throws NoRowsAffectedException, SQLException {
+        // diagram 7 - checkout and place order
+        orderDetailDA.insert(idOrder, idProduct, qty);
     }
     
 }

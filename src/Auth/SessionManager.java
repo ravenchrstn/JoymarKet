@@ -24,20 +24,4 @@ public abstract class SessionManager {
     public static void validateSession() {
         if ((loggedInAt + EXPIRY_DURATION) <= System.currentTimeMillis()) clearSession();
     }
-
-    // public static boolean isSessionValid() throws FileNotFoundException, IOException {
-    //     Properties prop = new Properties();
-    //     try (FileInputStream fis = new FileInputStream(FILENAME)) {
-    //         prop.load(fis);
-    //     }
-
-    //     String loggedInAtStr = prop.getProperty("loggedInAt");
-    //     if (loggedInAtStr == null) return false;
-
-    //     long loggedInAt = Long.parseLong(loggedInAtStr);
-    //     long now = System.currentTimeMillis();
-
-    //     if ((now - loggedInAt) >= EXPIRY_DURATION) return false;
-    //     return true;
-    // }
 }
