@@ -21,18 +21,16 @@ public class CartItem {
 
     public static CartItem fromResultSet(ResultSet rs) throws SQLException {
         return new CartItem(rs.getString("idUser"), rs.getString("idProduct"), rs.getInt("count"));
-
     }
 
-    public static String delete(String idUser, String idProduct) throws NoRowsAffectedException, SQLException {
+    public static void delete(String idUser, String idProduct) throws NoRowsAffectedException, SQLException {
         // diagram 5 - remove cart item
         cartItemDA.deleteById(idUser, idProduct);
-        return null;
     }
 
-    public static ArrayList<HashMap<String, Object>> getAllCheckoutItems(String idUser) throws SQLException {
+    public static ArrayList<HashMap<String, Object>> getCartItemsAndStockByIdUser(String idUser) throws SQLException {
         // diagram 7 - checkout and place order
-        return cartItemDA.findAllCheckoutItemsByIdUser(idUser);
+        return cartItemDA.findCartItemsAndStockByIdUser(idUser);
     }
 
     public static void deleteAllByIdUser(String idUser) throws NoRowsAffectedException, SQLException {
@@ -43,6 +41,11 @@ public class CartItem {
     public static Double getTotalAmountByUserId(String idUser) {
         // diagram 7 - checkout and place order
         return cartItemDA.sumTotalAmountByIdUser(idUser);
+    }
+
+    public static void updateCount(String idUser, String idProduct, Integer count) throws SQLException, NoRowsAffectedException {
+        // diagram 7 - checkout and place order
+        cartItemDA.updateCount(idUser, idProduct, count);
     }
 
     public String getIdUser() {

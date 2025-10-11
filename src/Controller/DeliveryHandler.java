@@ -24,8 +24,10 @@ public class DeliveryHandler {
 
     public String processDelivery(String idOrder, String idUser) {
         // diagram 12 - assign order to courier
+        String status = Delivery.getStatus(idOrder, idUser);
         try {
-            Delivery.processDelivery(idOrder, idUser);
+            if (status.equals("pending")) Delivery.updateStatus(idOrder, idUser, "in progress");
+            else if (status.equals("in progress")) Delivery.updateStatus(idOrder, idUser, "delivered");
         } catch (NoRowsAffectedException e) {
             e.printStackTrace();
             return e.getUserMessage();

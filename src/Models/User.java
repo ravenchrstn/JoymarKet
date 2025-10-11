@@ -5,7 +5,6 @@ import java.util.HashMap;
 
 import DAs.UserDA;
 import Exceptions.InvalidInputException;
-import Exceptions.NoRowsAffectedException;
 import Exceptions.NotFoundException;
 
 public abstract class User {
@@ -53,19 +52,8 @@ public abstract class User {
         this.idUser = idUser;
     }
 
-    public static void login(String email, String password) throws InvalidInputException, NotFoundException, SQLException {
+    public static HashMap<String, String> getCredentialsByEmail(String email, String password) throws InvalidInputException, NotFoundException, SQLException {
         // login
-        if (email.equals("") || email == null) throw new InvalidInputException("email field is empty.", "Email field is empty. Try input something.");
-
-        if (password.equals("") || password == null) throw new InvalidInputException("password field is empty.", "Password field is empty. Try input something..");
-
-        HashMap<String, String> hm = userDA.findCredentialsByEmail(email);
-        if (hm.get("email").equals(email) == false) throw new NotFoundException("Email is not found. Please try another email or register.");
-        if (hm.get("password").equals(password) == false) throw new NotFoundException("Password is wrong.");
-    }
-
-    public static void updateBalanceByIdUser(String idUser, Double newBalance) throws NoRowsAffectedException, SQLException {
-        // diagram 7 - checkout and place order
-        userDA.updateBalanceByIdUser(idUser, newBalance);
+        return userDA.findCredentialsByEmail(email);
     }
 }

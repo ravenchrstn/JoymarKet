@@ -10,7 +10,7 @@ public class ProductHandler {
     public MultipleObjectsResponse getProducts() {
         // diagram 2 - view products
         try {
-            ArrayList<Product> products = Product.getProducts();
+            ArrayList<Product> products = Product.getAllProducts();
             if (products.isEmpty() == true) return new MultipleObjectsResponse<>("Product is not available right now.", new ArrayList<>()); 
             return new MultipleObjectsResponse<>("", products);
         } catch (SQLException e) {

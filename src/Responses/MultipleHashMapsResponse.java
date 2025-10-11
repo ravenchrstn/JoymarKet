@@ -11,4 +11,21 @@ public class MultipleHashMapsResponse {
         this.errorUserMessage = errorUserMessage;
         this.hashMap = hashMap;
     }
+
+    public boolean isErrorUserMessage() {
+        return errorUserMessage != null;
+    }
+
+    public boolean isHashMap() {
+        return hashMap != null;
+    }
+
+    public String getErrorUserMessage() {
+        return errorUserMessage;
+    }
+
+    public ArrayList<HashMap<String, Object>> getHashMap() {
+        return hashMap;
+    }
+    
 }

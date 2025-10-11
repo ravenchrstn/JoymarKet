@@ -7,9 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import DAs.OrderHeaderDA;
-import Exceptions.InsufficientBalanceException;
 import Exceptions.NoRowsAffectedException;
-import Exceptions.OutOfStockException;
 
 public class OrderHeader {
     private String idOrder, idUser, idPromo, status;
@@ -45,28 +43,7 @@ public class OrderHeader {
         return orderHeaderDA.findAllOrders();
     }
 
-    public static void checkoutOrder(String idUser, String code) throws OutOfStockException, InsufficientBalanceException, NoRowsAffectedException, SQLException {
-        // diagram 7 - checkout and place order
-        ArrayList<HashMap<String, Object>> checkoutItems = CartItem.getAllCheckoutItems(idUser);
-        Double totalAmount = CartItem.getTotalAmountByUserId(idUser);
-        Customer customer = Customer.getCustomerByIdUser(idUser);
-        Double balance = customer.getBalance();
-        HashMap<String, Object> promoHM = Promo.getPromoInfoByCode(code);
-
-        totalAmount *= (100 - (Double) promoHM.get("discountPercentage"));
-        if (balance < totalAmount) throw new InsufficientBalanceException("Your balance is not sufficient for the transaction. Please top up and checkout again.");
-        User.updateBalanceByIdUser(idUser, (balance - totalAmount));
-
-        String idOrder = createOrderHeader(idUser, (String) promoHM.get("idPromo"), totalAmount);
-
-        for (int i = 0; i < checkoutItems.size(); i++) {
-            HashMap<String, Object> item = checkoutItems.get(i);
-            OrderDetail.createOrderDetail(idOrder, (String) item.get("idProduct"), (Integer) item.get("count"));
-        }
-        CartItem.deleteAllByIdUser(idUser);
-    }
-
-    public static String createOrderHeader(String idUser, String idPromo, Double totalAmount) throws NoRowsAffectedException, SQLException {
+    public static String insert(String idUser, String idPromo, Double totalAmount) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
         return orderHeaderDA.insert(idUser, idPromo, totalAmount);
     }

@@ -28,7 +28,7 @@ public class OrderDetail {
         return qty;
     }
 
-    public static void createOrderDetail(String idOrder, String idProduct, Integer qty) throws NoRowsAffectedException, SQLException {
+    public static void insert(String idOrder, String idProduct, Integer qty) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
         orderDetailDA.insert(idOrder, idProduct, qty);
     }

@@ -3,6 +3,7 @@ package Models;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import DAs.ProductDA;
 
 public class Product {
@@ -23,7 +24,7 @@ public class Product {
         return new Product(rs.getString("idProduct"), rs.getString("name"), rs.getString("category"), rs.getDouble("price"), rs.getInt("stock"));
     }
 
-    public static ArrayList<Product> getProducts() throws SQLException {
+    public static ArrayList<Product> getAllProducts() throws SQLException {
         // diagram 2 - view products
         return productDA.findAll();
     }

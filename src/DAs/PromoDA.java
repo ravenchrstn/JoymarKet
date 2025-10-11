@@ -15,7 +15,7 @@ public class PromoDA {
         return promoDA;
     }
 
-    public HashMap<String, Object> getPromoInfoByCode(String code) throws SQLException {
+    public HashMap<String, Object> findPromoInfoByCode(String code) throws SQLException {
         // diagram 7 - checkout and place order
         String query = "SELECT idPromo, discountPercentage FROM promos WHERE code = " + code + ";";
         ResultSet rs = this.connect.execQuery(query);

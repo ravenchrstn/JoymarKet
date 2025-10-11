@@ -20,11 +20,12 @@ public class Delivery {
         return new Delivery(rs.getString("idOrder"), rs.getString("idUser"), rs.getString("status"));
     }
 
-    public static void processDelivery(String idOrder, String idUser) throws NoRowsAffectedException, SQLException {
-        // diagram 12 - assign order to courier
-        String status = deliveryDA.findStatus(idOrder, idUser);
-        if (status.equals("pending")) deliveryDA.updateStatus(idOrder, idUser, "in progress");
-        else if (status.equals("in progress")) deliveryDA.updateStatus(idOrder, idUser, "delivered");
+    public static String getStatus(String idOrder, String idUser) {
+        return deliveryDA.findStatus(idOrder, idUser);
+    }
+
+    public static void updateStatus(String idOrder, String idUser, String status) throws NoRowsAffectedException, SQLException {
+        deliveryDA.updateStatus(idOrder, idUser, status);
     }
 
     public String getIdOrder() {

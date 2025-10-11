@@ -24,7 +24,7 @@ public class Promo {
 
     public static HashMap<String, Object> getPromoInfoByCode(String code) throws SQLException {
         // diagram 7 - checkout and place order
-        return promoDA.getPromoInfoByCode(code);
+        return promoDA.findPromoInfoByCode(code);
     }
 
     public String getIdPromo() {

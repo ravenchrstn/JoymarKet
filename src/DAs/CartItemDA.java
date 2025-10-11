@@ -25,15 +25,17 @@ public class CartItemDA {
         if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("The item you are trying to delete was not found or has already been removed.");
     }
 
-    public ArrayList<HashMap<String, Object>> findAllCheckoutItemsByIdUser(String idUser) throws SQLException {
+    public ArrayList<HashMap<String, Object>> findCartItemsAndStockByIdUser(String idUser) throws SQLException {
         // diagram 7 - checkout and place order
-        String query = "SELECT p.idProduct, ci.count FROM cart_items ci JOIN products p ON ci.idProduct = p.idProduct WHERE ci.idUser = " + idUser + ";";
+        String query = "SELECT p.idProduct, p.name, ci.count, p.stock FROM cart_items ci JOIN products p ON ci.idProduct = p.idProduct WHERE ci.idUser = " + idUser + " ORDER BY p.idProduct ASC;";
         ResultSet rs = this.connect.execQuery(query);
         ArrayList<HashMap<String, Object>> checkoutItems = new ArrayList<>();
         while (rs.next()) {
             HashMap<String, Object> hm = new HashMap<>();
             hm.put("idProduct", rs.getString("idProduct"));
+            hm.put("name", rs.getString("name"));
             hm.put("count", rs.getInt("count"));
+            hm.put("stock", rs.getInt("stock"));
             checkoutItems.add(hm);
         }
         
@@ -54,6 +56,15 @@ public class CartItemDA {
     public void deleteAllByIdUser(String idUser) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
         String query = "DELETE FROM cart_items WHERE idUser = " + idUser + ";";
+        HashMap<String, Object> hm = this.connect.execUpdate(query);
+        ResultSet rs = (ResultSet) hm.get("resultSet");
+        rs.next();
+        if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Your cart is already empty.");
+    }
+
+    public void updateCount(String idUser, String idProduct, Integer count) throws SQLException, NoRowsAffectedException {
+        // diagram 7 - checkout and place order
+        String query = "UPDATE cart_items SET count = " + count + " WHERE idUser = " + idUser + " AND idProduct = " + idProduct + ";";
         HashMap<String, Object> hm = this.connect.execUpdate(query);
         ResultSet rs = (ResultSet) hm.get("resultSet");
         rs.next();

@@ -8,4 +8,20 @@ public class SingleObjectResponse<T> {
         this.errorUserMessage = errorUserMessage;
         this.object = object;
     }
+
+    public boolean isErrorUserMessage() {
+        return errorUserMessage != null;
+    }
+
+    public boolean isObject() {
+        return object != null;
+    }
+
+    public String getErrorUserMessage() {
+        return errorUserMessage;
+    }
+
+    public T getHashMap() {
+        return object;
+    }
 }
