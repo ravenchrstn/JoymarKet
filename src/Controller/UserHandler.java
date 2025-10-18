@@ -1,17 +1,17 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Exceptions.InvalidInputException;
-import Exceptions.NoRowsAffectedException;
-import Exceptions.NotFoundException;
-import Helpers.Checking;
-import Models.Courier;
-import Models.Customer;
-import Models.User;
-import Responses.MultipleObjectsResponse;
+import exception.InvalidInputException;
+import exception.NoRowsAffectedException;
+import exception.NotFoundException;
+import helper.Checking;
+import model.Courier;
+import model.Customer;
+import model.User;
+import response.MultipleObjectsResponse;
 
 public class UserHandler {
 

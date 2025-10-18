@@ -1,12 +1,12 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Exceptions.NoRowsAffectedException;
-import Models.Delivery;
-import Models.OrderHeader;
-import Responses.MultipleObjectsResponse;
+import exception.NoRowsAffectedException;
+import model.Delivery;
+import model.OrderHeader;
+import response.MultipleObjectsResponse;
 public class DeliveryHandler {
     
     public MultipleObjectsResponse<OrderHeader> getAssignedDeliveries(String idUser) {

@@ -1,9 +1,9 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 
-import Exceptions.NoRowsAffectedException;
-import Models.CartItem;
+import exception.NoRowsAffectedException;
+import model.CartItem;
 
 public class CartItemHandler {
 

@@ -1,6 +1,6 @@
-package Auth;
+package auth;
 
-import Models.User;
+import model.User;
 
 public abstract class SessionManager {
     private static final long EXPIRY_DURATION = 60 * 60 * 1000; // 60 minutes

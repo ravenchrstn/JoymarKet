@@ -1,16 +1,16 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import Exceptions.NoRowsAffectedException;
-import Models.CartItem;
-import Models.Customer;
-import Models.OrderDetail;
-import Models.OrderHeader;
-import Models.Promo;
-import Responses.MultipleHashMapsResponse;
+import exception.NoRowsAffectedException;
+import model.CartItem;
+import model.Customer;
+import model.OrderDetail;
+import model.OrderHeader;
+import model.Promo;
+import response.MultipleHashMapsResponse;
 
 public class OrderHeaderHandler {
 

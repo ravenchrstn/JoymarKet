@@ -1,10 +1,10 @@
-package Controller;
+package controller;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import Models.Product;
-import Responses.MultipleObjectsResponse;
+import model.Product;
+import response.MultipleObjectsResponse;
 public class ProductHandler {
 
     public MultipleObjectsResponse getProducts() {
