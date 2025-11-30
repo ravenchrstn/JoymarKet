@@ -5,11 +5,20 @@ import java.util.HashMap;
 
 import da.UserDA;
 import exception.InvalidInputException;
+import exception.NoRowsAffectedException;
 import exception.NotFoundException;
 
 public abstract class User {
     protected String idUser, fullName, email, password, phone, address, role;
-    protected static final UserDA userDA = UserDA.getUserDA();
+    
+    protected static UserDA userDA;
+
+    public static UserDA getUserDA() {
+        if (userDA == null) {
+            userDA = UserDA.getUserDA();
+        }
+        return userDA;
+    }
 
     public User(String idUser, String fullName, String email, String password, String phone, String address, String role) {
         this.idUser = idUser;
@@ -47,13 +56,24 @@ public abstract class User {
     public String getRole() {
         return role;
     }
-
+    
     public void setIdUser(String idUser) {
         this.idUser = idUser;
     }
 
+    public static void updateUserById (String idUser, String fullName, String phone, String address) throws NoRowsAffectedException, SQLException {
+        userDA.updateUserById(idUser, fullName, phone, address);
+    }
+    
     public static HashMap<String, String> getCredentialsByEmail(String email, String password) throws InvalidInputException, NotFoundException, SQLException {
         // login
-        return userDA.findCredentialsByEmail(email);
+    	UserDA userDA = getUserDA();   
+        HashMap<String, String> hm = userDA.findCredentialsByEmail(email);
+
+        if (hm == null || hm.isEmpty()) {
+            throw new NotFoundException("Email is not found. Please try another email or register.");
+        }
+
+        return hm;
     }
 }

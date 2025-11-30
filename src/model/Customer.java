@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import exception.NoRowsAffectedException;
 
-
 public class Customer extends User {
     private Double balance;
 
@@ -24,17 +23,24 @@ public class Customer extends User {
         return userDA.getCustomerByIdUser(idUser);
     }
 
+    public static Double getBalanceByIdUser(String idUser) throws SQLException {
+    	return userDA.getBalanceByIdUser(idUser);
+    }
+
     public static void updateBalanceByIdUser(String idUser, Double newBalance) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
         userDA.updateBalanceByIdUser(idUser, newBalance);
     }
-
-    public static String insert(String fullName, String email, String password, String confirm_password, String phone, String address) throws NoRowsAffectedException, SQLException { 
+    
+    public static int insert(String fullName, String email, String password, String confirm_password, String phone, String address) throws NoRowsAffectedException, SQLException { 
         // diagram 1 - register account
-        userDA.insertCustomer(fullName, email, password, phone, address);
-        return null;
+        return getUserDA().insertUser(fullName, email, password, phone, address);
     }
-
+    
+    public static void insertBalance(int userId, Double balance) throws NoRowsAffectedException, SQLException { 
+        getUserDA().insertCustomer(userId, balance);
+    }
+    
     public boolean topUpBalance(Double amount) {
         return false;
     }
