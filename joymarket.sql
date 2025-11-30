@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 24, 2025 at 05:54 PM
+-- Generation Time: Nov 30, 2025 at 10:13 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -66,6 +66,16 @@ CREATE TABLE `customer` (
   `idCustomer` int(11) NOT NULL,
   `balance` double DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`idCustomer`, `balance`) VALUES
+(7, 123936936.34),
+(13, 30000),
+(14, 0),
+(15, 0);
 
 -- --------------------------------------------------------
 
@@ -148,6 +158,26 @@ CREATE TABLE `user` (
   `address` varchar(200) DEFAULT NULL,
   `role` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`idUser`, `fullName`, `email`, `password`, `phone`, `address`, `role`) VALUES
+(2, 'a', 'a@gmail.com', 'aaaaaa', '1231231233', 'a', 'customer'),
+(3, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
+(4, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
+(5, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
+(6, 'a', 'a@gmail.com', 'asdasd', '1231231231', '1', 'customer'),
+(7, 'mmmmmmmm', 'a@gmail.com', '123123', '11111111111', '1123', 'customer'),
+(8, 'a', 'a@gmail.com', 'fghfgh', '1231231231', '1231231231', 'customer'),
+(9, 'a', 'a@gmail.com', '123123', '1231231231', '123', 'customer'),
+(10, '123', '123@gmail.com', '123123123', '1231231231231', '123', 'customer'),
+(11, '1', '1@gmail.com', '123123', '1231231231', '123', 'customer'),
+(12, 'a', 'abc@gmail.com', 'asdasd', '1231231231', '123', 'customer'),
+(13, 'human 123 123', '123@gmail.com', '1231231', '1231231231', 'human house', 'customer'),
+(14, 'abcde', 'aaa123@gmail.com', 'aaa123', '1231231231', '123aaa', 'customer'),
+(15, '123', '123@gmail.com', '123123123', '1231231231', '123', 'customer');
 
 --
 -- Indexes for dumped tables
@@ -244,7 +274,7 @@ ALTER TABLE `promo`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
