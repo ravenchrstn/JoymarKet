@@ -6,7 +6,9 @@ module JoymarKet {
     requires mysql.connector.java;
     
     opens view;
+    opens model;
     opens app to javafx.fxml;
     opens controller to javafx.fxml;
+    exports model;
     exports app;
 }

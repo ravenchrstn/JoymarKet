@@ -27,6 +27,7 @@ public abstract class User {
         this.password = password;
         this.phone = phone;
         this.address = address;
+        this.role = role;
     }
 
     public String getIdUser() {

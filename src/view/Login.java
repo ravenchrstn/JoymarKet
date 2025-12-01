@@ -3,6 +3,7 @@ import controller.UserHandler;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
@@ -53,7 +54,6 @@ public class Login extends Application{
 			vbox_main.setPadding(new Insets(40));
 			vbox_main.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.05), 10, 0, 0, 3);");
 			
-			borderPane.setStyle("-fx-background-color: #F5F7FA;");
 			borderPane.setPadding(new Insets(40));
 
 			loginLabel = new Label("Login Page");
@@ -106,7 +106,8 @@ public class Login extends Application{
 			loginBtn.setMinWidth(200);
 			loginBtn.setMaxWidth(200);
 			loginBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 6;");
-			
+            loginBtn.setOnMouseEntered(e -> loginBtn.setCursor(Cursor.HAND));
+
 			registerHyperlink = new Hyperlink("Don't have an account yet");
 			registerHyperlink.setOnAction(e->{
 		        try {

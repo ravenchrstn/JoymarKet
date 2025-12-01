@@ -6,6 +6,7 @@ import controller.UserHandler;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -27,7 +28,7 @@ public class TopUpPage extends Application {
 	Label topupLabel;
 	TextField topupField;
 	Label errorMessage;
-	Button topupButton;
+	Button topupBtn;
 	
 	public TopUpPage(){
 		
@@ -36,7 +37,6 @@ public class TopUpPage extends Application {
 	    vbox_main = new VBox(20);
 	    vbox_main.setAlignment(Pos.CENTER);
 	    vbox_main.setPadding(new Insets(30));
-	    vbox_main.setStyle("-fx-background-color: #F5F7FA;");
 	    
         vbox_formCard = new VBox(20);
         vbox_formCard.setPadding(new Insets(25));
@@ -58,15 +58,17 @@ public class TopUpPage extends Application {
         errorMessage.setTextFill(Color.RED);
         errorMessage.setFont(Font.font("Arial", FontWeight.BOLD, 12));
         
-        topupButton = new Button("Top-up Account");
-        topupButton.setPrefHeight(35);
-        topupButton.setMaxWidth(Double.MAX_VALUE);
-        topupButton.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 6;");
+        topupBtn = new Button("Top-up Account");
+        topupBtn.setPrefHeight(35);
+        topupBtn.setMaxWidth(Double.MAX_VALUE);
+        topupBtn.setStyle("-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-size: 15; -fx-font-weight: bold; -fx-background-radius: 6;");
+        topupBtn.setOnMouseEntered(e -> topupBtn.setCursor(Cursor.HAND));
+
        
-        vbox_formCard.getChildren().addAll(formTitle, topupLabel, topupField, errorMessage, topupButton);
+        vbox_formCard.getChildren().addAll(formTitle, topupLabel, topupField, errorMessage, topupBtn);
         vbox_main.getChildren().add(vbox_formCard);
         
-        topupButton.setOnAction(e->{
+        topupBtn.setOnAction(e->{
         	UserHandler UH = new UserHandler() ;
         	String idUser = SessionManager.getUser().getIdUser().toString();
         	

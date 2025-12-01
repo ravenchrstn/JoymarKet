@@ -6,6 +6,7 @@ import controller.UserHandler;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -47,7 +48,6 @@ public class EditProfilePage extends Application {
     
     public EditProfilePage() {
         borderPane = new BorderPane();
-        borderPane.setStyle("-fx-background-color: white;");
         scene = new Scene(borderPane, 500, 500);
 
         vbox_main = new VBox(10);
@@ -95,6 +95,7 @@ public class EditProfilePage extends Application {
         saveBtn = new Button("Save Changes");
         saveBtn.setPrefHeight(40);
         saveBtn.setStyle("-fx-background-color: #1A73E8; -fx-text-fill: white; -fx-background-radius: 6; -fx-font-size: 15px; -fx-font-weight: bold;");
+        saveBtn.setOnMouseEntered(e -> saveBtn.setCursor(Cursor.HAND));
 
         successMesssage = new Label("");
         successMesssage.setManaged(false);

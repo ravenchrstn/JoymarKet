@@ -18,7 +18,7 @@ public class ProductDA {
 
     public ArrayList<Product> findAll() throws SQLException {
         // diagram 2 - view products
-        String query = "SELECT idProduct, name, category, price, stock FROM products";
+        String query = "SELECT idProduct, name, category, price, stock FROM product";
         ResultSet rs = this.connect.execQuery(query);
 
         ArrayList<Product> products = new ArrayList<Product>();

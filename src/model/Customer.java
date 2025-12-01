@@ -8,7 +8,7 @@ public class Customer extends User {
     private Double balance;
 
     public Customer(String idUser, String fullName, String email, String password, String phone, String address, Double balance) {
-        super(idUser, fullName, email, password, phone, address, "Customer");
+        super(idUser, fullName, email, password, phone, address, "customer");
 
         if (balance != 0.0) this.balance = balance;
         else this.balance = 0.0;

@@ -3,13 +3,22 @@ package view;
 import java.sql.SQLException;
 import auth.SessionManager;
 import components.Navbar;
+import controller.ProductHandler;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableCell;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -20,28 +29,58 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 import model.Customer;
+import model.Product;
+import response.MultipleObjectsResponse;
 
 public class HomePage extends Application {
 
     Scene scene;
     BorderPane borderPane;
+    ScrollPane scrollPane;
+    GridPane header_table;
 
+    ProductHandler ph;
+    Product p;
+    MultipleObjectsResponse<Product> resp;
+    
     Label topUpBalance;
     Label desc;
     Label balanceLabel;
     Label balanceAmount;
+    Label catalogTitle;
+    Label lblHeader;
+    Label errorMsg;
 
+    Button topUpBtn;
+    
+    TextField qtyField;
+    
+    TableView<Product> productTable;
+    TableColumn<Product, String> nameCol;
+    TableColumn<Product, String> priceCol;
+    TableColumn<Product, String> stockCol;
+    TableColumn<Product, String> categoryCol;
+    TableColumn<Product, Void> quantityCol;    
+    TableColumn<Product, Void> actionCol;
+    TableCell<Product, Void> qtyCell;
+    
     VBox vbox_homepage_no_logged;
     VBox balanceCard;
+    VBox productCatalogContainer;
+    VBox box_action;
+    VBox wrapper;
+    VBox finalContainer;
     HBox hBox_balance_btn;
+    HBox header;
 
     public HomePage() {
 
         borderPane = new BorderPane();
-        scene = new Scene(borderPane, 500, 500);
+        scrollPane = new ScrollPane();
 
         if (SessionManager.getUser() == null) {
 
+        	scene = new Scene(borderPane, 500, 500);
             vbox_homepage_no_logged = new VBox(15);
             vbox_homepage_no_logged.setAlignment(Pos.CENTER);
 
@@ -60,65 +99,228 @@ public class HomePage extends Application {
             borderPane.setCenter(vbox_homepage_no_logged);
             return;
         }
-
-
-        hBox_balance_btn = new HBox();
-        hBox_balance_btn.setAlignment(Pos.CENTER);
+        	
         
-        
-        balanceCard = new VBox(10);
-        balanceCard.setPadding(new Insets(20));
-        balanceCard.setStyle(
-            "-fx-background-color: white; " +
-            "-fx-background-radius: 10; " +
-            "-fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);"
-        );
-        balanceCard.setMinWidth(400);
-        balanceCard.setMaxWidth(400);
-        balanceCard.setMaxHeight(100);
+    	String role = SessionManager.getUser().getRole();
+        scrollPane = new ScrollPane();
+        scrollPane.setFitToWidth(true);     
+        scrollPane.setFitToHeight(false);
+        scrollPane.setContent(borderPane);  
+        scene = new Scene(scrollPane, 500, 500);
+    	
+    	if(role.compareTo("customer") == 0) {
+    		hBox_balance_btn = new HBox();
+    		hBox_balance_btn.setAlignment(Pos.CENTER);
+    		
+    		balanceCard = new VBox(10);
+    		balanceCard.setPadding(new Insets(20));
+    		balanceCard.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);");
+    		balanceCard.setMinWidth(400);
+    		balanceCard.setMaxHeight(100);
+    		
+    		balanceLabel = new Label("Your Current Balance");
+    		balanceLabel.setFont(Font.font("Arial", 16));
+    		balanceLabel.setTextFill(Color.GRAY);
+    		
+    		String userId = SessionManager.getUser().getIdUser();
+    		
+    		try {
+    			balanceAmount = new Label("$" + Customer.getBalanceByIdUser(userId));
+    		} catch (SQLException e) {
+    			balanceAmount = new Label("$0.0");
+    			e.printStackTrace();
+    		}
+    		balanceAmount.setFont(Font.font("Arial", FontWeight.BOLD, 32));
+    		
+    		topUpBtn = new Button("+");
+    		topUpBtn.setFont(Font.font("Arial", FontWeight.BOLD, 20));
+    		topUpBtn.setStyle(
+    				"-fx-background-radius: 50; -fx-background-color: #4CAF50; -fx-text-fill: white;"
+    				);
+    		
+            topUpBtn.setOnMouseEntered(e -> topUpBtn.setCursor(Cursor.HAND));
+    		
+    		Region spacer1 = new Region();
+    		HBox.setHgrow(spacer1, Priority.ALWAYS);
+    		
+    		hBox_balance_btn.getChildren().addAll(balanceAmount, spacer1, topUpBtn);
+    		balanceCard.getChildren().addAll(balanceLabel, hBox_balance_btn);
+    		borderPane.setCenter(balanceCard);
+    		borderPane.setPadding(new Insets(0, 20, 0, 20));
+    		borderPane.setAlignment(balanceCard, Pos.TOP_CENTER);
+    		
+    		topUpBtn.setOnAction(e->{
+    			try {
+    				new TopUpPage().start((Stage) topUpBtn.getScene().getWindow());
+    			} catch (Exception e1) {
+    				e1.printStackTrace();
+    			}
+    		});
+        		
+    		
+    		
+    		
+    		productCatalogContainer = new VBox(20);
+    		productCatalogContainer.setStyle("fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);");
+    		productCatalogContainer.setAlignment(Pos.TOP_CENTER);
 
-        balanceLabel = new Label("Your Current Balance");
-        balanceLabel.setFont(Font.font("Arial", 16));
-        balanceLabel.setTextFill(Color.GRAY);
+    		catalogTitle = new Label("All Products");
+    		catalogTitle.setFont(Font.font("Arial", FontWeight.BOLD, 26));
 
-        String userId = SessionManager.getUser().getIdUser();
+    		productTable = new TableView<>();
+    		productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
-        try {
-            balanceAmount = new Label("$" + Customer.getBalanceByIdUser(userId));
-        } catch (SQLException e) {
-            balanceAmount = new Label("$0.0");
-            e.printStackTrace();
+    		nameCol = new TableColumn<>("Name");
+    		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
+
+    		priceCol = new TableColumn<>("Price");
+    		priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
+
+    		stockCol = new TableColumn<>("Stock");
+    		stockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
+
+    		categoryCol = new TableColumn<>("Category");
+    		categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
+    		
+    		quantityCol = new TableColumn<>("Count");
+    		actionCol = new TableColumn<>("Action");
+
+    		
+    		
+    		quantityCol.setCellFactory(col -> new TableCell<Product, Void>() {
+
+    		    public TextField qtyField = new TextField();
+    		    public Label errorMsg = new Label();
+    		    private final VBox wrapper = new VBox(2); 
+
+    		    {
+    		        qtyField.setMaxWidth(60);
+    		        qtyField.textProperty().addListener((obs, oldVal, newVal) -> {
+    		            if (!newVal.matches("\\d*")) {
+    		                qtyField.setText(newVal.replaceAll("[^\\d]", ""));
+    		            }
+    		        });
+
+    		        errorMsg.setTextFill(Color.RED);
+    		        errorMsg.setVisible(false); 
+
+    		        wrapper.setAlignment(Pos.CENTER);
+    		        wrapper.getChildren().addAll(qtyField, errorMsg);
+    		    }
+
+    		    @Override
+    		    protected void updateItem(Void item, boolean empty) {
+    		        super.updateItem(item, empty);
+
+    		        if (empty) {
+    		            setGraphic(null);
+    		            return;
+    		        }
+
+    		        qtyField.setText("");
+    		        errorMsg.setVisible(false);
+    		        setGraphic(wrapper);
+    		    }
+    		});
+
+    		
+    		
+    		ph = new ProductHandler();
+    		resp = ph.getProducts();
+    		productTable.getItems().addAll(resp.getHashMap());
+    		
+    		
+    		
+    		actionCol.setCellFactory(col -> new TableCell<Product, Void>() {
+
+    		    private final Button addBtn = new Button("Add to Cart");
+
+    		    {
+    		        addBtn.setStyle("-fx-background-color:#1e88e5; -fx-text-fill:white; -fx-background-radius:6;");
+    		    }
+
+    		    @Override
+    		    protected void updateItem(Void item, boolean empty) {
+    		        super.updateItem(item, empty);
+
+    		        if (empty) {
+    		            setGraphic(null);
+    		            return;
+    		        }
+
+    		        p = getTableView().getItems().get(getIndex());
+
+    		        addBtn.setOnAction(e -> {
+    		        	
+    		            qtyCell = (TableCell<Product, Void>) getTableRow().getChildrenUnmodifiable().get(4);
+
+    		            qtyField = (TextField) ((VBox) qtyCell.getGraphic()).getChildren().get(0);    		
+    		            errorMsg = (Label) ((VBox) qtyCell.getGraphic()).getChildren().get(1);
+    		            errorMsg.setFont(Font.font("Arial", FontWeight.BOLD, 12));
+
+    		            String val = qtyField.getText().trim();
+    		                		            
+    		            if (val.isEmpty()) {
+    		                errorMsg.setText("Enter amount!");
+    		                errorMsg.setVisible(true);
+    		                return;
+    		            }
+
+    		            int amount = Integer.parseInt(val);
+    		            int stock = p.getStock();
+
+    		            if (amount > stock) {
+    		                errorMsg.setText("Stock not enough!");
+    		                errorMsg.setVisible(true);
+    		                return;
+    		            }
+    		            
+    		            if(amount == 0) {
+    		                errorMsg.setText("Count cannot be 0!");
+    		                errorMsg.setVisible(true);
+    		                return;
+    		            }
+    		            
+    		            errorMsg.setVisible(false);
+    		        });
+
+    		        wrapper = new VBox(addBtn);
+    		        wrapper.setAlignment(Pos.CENTER);
+
+    		        setGraphic(wrapper);
+    		    }
+    		});
+
+
+    		productTable.getColumns().addAll(nameCol, priceCol, stockCol, categoryCol, quantityCol, actionCol);
+
+    		productTable.setFixedCellSize(60);
+    		productTable.prefHeightProperty().bind(productTable.fixedCellSizeProperty().multiply(productTable.getItems().size()).add(40));
+    		productTable.minHeightProperty().bind(productTable.prefHeightProperty());
+    		productTable.maxHeightProperty().bind(productTable.prefHeightProperty());
+    		
+    		nameCol.setStyle("-fx-alignment: CENTER;");   
+    		priceCol.setStyle("-fx-alignment: CENTER;");
+    		stockCol.setStyle("-fx-alignment: CENTER;");
+    		categoryCol.setStyle("-fx-alignment: CENTER;");
+    		actionCol.setStyle("-fx-alignment: CENTER;");
+
+    		productCatalogContainer.getChildren().addAll(catalogTitle, productTable);
+    		
+    		finalContainer = new VBox(25, balanceCard, productCatalogContainer);
+    		finalContainer.setAlignment(Pos.TOP_CENTER);
+    		finalContainer.setPadding(new Insets(10, 20, 10, 20));
+
+    		borderPane.setCenter(finalContainer);        		
         }
-        balanceAmount.setFont(Font.font("Arial", FontWeight.BOLD, 32));
-
-        Button topUpBtn = new Button("+");
-        topUpBtn.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-        topUpBtn.setStyle(
-            "-fx-background-radius: 50; -fx-background-color: #4CAF50; -fx-text-fill: white;"
-        );
         
-	    Region spacer1 = new Region();
-	    HBox.setHgrow(spacer1, Priority.ALWAYS);
-        
-        
-        hBox_balance_btn.getChildren().addAll(balanceAmount, spacer1, topUpBtn);
-        balanceCard.getChildren().addAll(balanceLabel, hBox_balance_btn);
-        borderPane.setCenter(balanceCard);
-        
-        topUpBtn.setOnAction(e->{
-        	try {
-				new TopUpPage().start((Stage) topUpBtn.getScene().getWindow());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-        });
     }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         Navbar navbar = new Navbar(primaryStage);
         borderPane.setTop(navbar);
-
+        
         primaryStage.setScene(scene);
         primaryStage.show();
     }
