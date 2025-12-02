@@ -15,6 +15,22 @@ public class CartItemDA {
         if (cartItemDA == null) cartItemDA = new CartItemDA();
         return cartItemDA;
     }
+    
+    public void addProductToCart(String idCustomer, String idProduct, int amount) throws NoRowsAffectedException, SQLException {
+    	String query = 
+    		    "INSERT INTO cartitem (idCustomer, idProduct, count) VALUES ('"
+    		    + idCustomer + "', '"
+    		    + idProduct + "', "
+    		    + amount + ") "
+    		    + "ON DUPLICATE KEY UPDATE count = count + " + amount + ";";
+    	
+	    HashMap<String, Object> hm = this.connect.execUpdate(query);
+	    int rowsAffected = (Integer) hm.get("rowsAffected");
+
+	    if (rowsAffected <= 0) {
+	        throw new NoRowsAffectedException("Failed to add product to cart.");
+	    }
+    }
 
     public void deleteById(String idUser, String idProduct) throws NoRowsAffectedException, SQLException {
         // diagram 5 - remove cart item

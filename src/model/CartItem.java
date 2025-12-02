@@ -11,7 +11,8 @@ import exception.NoRowsAffectedException;
 public class CartItem {
     private String idUser, idProduct;
     private Integer count;
-    protected static final CartItemDA cartItemDA = CartItemDA.getCartItemDA();
+
+    private static final CartItemDA cartItemDA = CartItemDA.getCartItemDA();
     
     public CartItem(String idUser, String idProduct, Integer count) {
         this.idUser = idUser;
@@ -19,6 +20,10 @@ public class CartItem {
         this.count = count;
     }
 
+	public static void add(String idUser2, String idProduct2, int amount)  throws SQLException, NoRowsAffectedException{
+		cartItemDA.addProductToCart(idUser2, idProduct2, amount);
+	}
+    
     public static CartItem fromResultSet(ResultSet rs) throws SQLException {
         return new CartItem(rs.getString("idUser"), rs.getString("idProduct"), rs.getInt("count"));
     }
@@ -59,5 +64,4 @@ public class CartItem {
     public Integer getCount() {
         return count;
     }
-
 }

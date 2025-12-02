@@ -3,7 +3,9 @@ package view;
 import java.sql.SQLException;
 import auth.SessionManager;
 import components.Navbar;
+import controller.CartItemHandler;
 import controller.ProductHandler;
+import exception.InvalidInputException;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -41,6 +43,8 @@ public class HomePage extends Application {
 
     ProductHandler ph;
     Product p;
+    Product rowProduct;
+    String idProduct;
     MultipleObjectsResponse<Product> resp;
     
     Label topUpBalance;
@@ -52,7 +56,6 @@ public class HomePage extends Application {
     Label errorMsg;
 
     Button topUpBtn;
-    
     TextField qtyField;
     
     TableView<Product> productTable;
@@ -79,28 +82,21 @@ public class HomePage extends Application {
         scrollPane = new ScrollPane();
 
         if (SessionManager.getUser() == null) {
-
         	scene = new Scene(borderPane, 500, 500);
             vbox_homepage_no_logged = new VBox(15);
             vbox_homepage_no_logged.setAlignment(Pos.CENTER);
-
             Label title = new Label("JoymarKet");
             title.setFont(Font.font("Arial", FontWeight.BOLD, 26));
             title.setTextFill(Color.BLACK);
-
-            desc = new Label(
-                "Welcome to our digital marketplace for fresh food, meats, and groceries, delivered instantly to your door. Log in to explore personalized selections and enjoy a faster, fresher shopping experience. Get started today!"
-            );
+            desc = new Label("Welcome to our digital marketplace for fresh food, meats, and groceries, delivered instantly to your door. Log in to explore personalized selections and enjoy a faster, fresher shopping experience. Get started today!");
             desc.setWrapText(true);
             desc.setTextAlignment(TextAlignment.CENTER);
             desc.setMaxWidth(450);
-
             vbox_homepage_no_logged.getChildren().addAll(title, desc);
             borderPane.setCenter(vbox_homepage_no_logged);
             return;
         }
         	
-        
     	String role = SessionManager.getUser().getRole();
         scrollPane = new ScrollPane();
         scrollPane.setFitToWidth(true);     
@@ -111,13 +107,11 @@ public class HomePage extends Application {
     	if(role.compareTo("customer") == 0) {
     		hBox_balance_btn = new HBox();
     		hBox_balance_btn.setAlignment(Pos.CENTER);
-    		
     		balanceCard = new VBox(10);
     		balanceCard.setPadding(new Insets(20));
     		balanceCard.setStyle("-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);");
     		balanceCard.setMinWidth(400);
     		balanceCard.setMaxHeight(100);
-    		
     		balanceLabel = new Label("Your Current Balance");
     		balanceLabel.setFont(Font.font("Arial", 16));
     		balanceLabel.setTextFill(Color.GRAY);
@@ -131,18 +125,13 @@ public class HomePage extends Application {
     			e.printStackTrace();
     		}
     		balanceAmount.setFont(Font.font("Arial", FontWeight.BOLD, 32));
-    		
     		topUpBtn = new Button("+");
     		topUpBtn.setFont(Font.font("Arial", FontWeight.BOLD, 20));
-    		topUpBtn.setStyle(
-    				"-fx-background-radius: 50; -fx-background-color: #4CAF50; -fx-text-fill: white;"
-    				);
+    		topUpBtn.setStyle("-fx-background-radius: 50; -fx-background-color: #4CAF50; -fx-text-fill: white;");
     		
             topUpBtn.setOnMouseEntered(e -> topUpBtn.setCursor(Cursor.HAND));
-    		
     		Region spacer1 = new Region();
     		HBox.setHgrow(spacer1, Priority.ALWAYS);
-    		
     		hBox_balance_btn.getChildren().addAll(balanceAmount, spacer1, topUpBtn);
     		balanceCard.getChildren().addAll(balanceLabel, hBox_balance_btn);
     		borderPane.setCenter(balanceCard);
@@ -157,42 +146,28 @@ public class HomePage extends Application {
     			}
     		});
         		
-    		
-    		
-    		
     		productCatalogContainer = new VBox(20);
     		productCatalogContainer.setStyle("fx-background-radius: 10; -fx-effect: dropshadow(two-pass-box, rgba(0,0,0,0.08), 8, 0, 0, 3);");
     		productCatalogContainer.setAlignment(Pos.TOP_CENTER);
-
     		catalogTitle = new Label("All Products");
     		catalogTitle.setFont(Font.font("Arial", FontWeight.BOLD, 26));
-
     		productTable = new TableView<>();
     		productTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
-
     		nameCol = new TableColumn<>("Name");
     		nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-
     		priceCol = new TableColumn<>("Price");
     		priceCol.setCellValueFactory(new PropertyValueFactory<>("price"));
-
     		stockCol = new TableColumn<>("Stock");
     		stockCol.setCellValueFactory(new PropertyValueFactory<>("stock"));
-
     		categoryCol = new TableColumn<>("Category");
     		categoryCol.setCellValueFactory(new PropertyValueFactory<>("category"));
-    		
     		quantityCol = new TableColumn<>("Count");
     		actionCol = new TableColumn<>("Action");
 
-    		
-    		
     		quantityCol.setCellFactory(col -> new TableCell<Product, Void>() {
-
     		    public TextField qtyField = new TextField();
     		    public Label errorMsg = new Label();
     		    private final VBox wrapper = new VBox(2); 
-
     		    {
     		        qtyField.setMaxWidth(60);
     		        qtyField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -200,10 +175,8 @@ public class HomePage extends Application {
     		                qtyField.setText(newVal.replaceAll("[^\\d]", ""));
     		            }
     		        });
-
     		        errorMsg.setTextFill(Color.RED);
     		        errorMsg.setVisible(false); 
-
     		        wrapper.setAlignment(Pos.CENTER);
     		        wrapper.getChildren().addAll(qtyField, errorMsg);
     		    }
@@ -211,30 +184,22 @@ public class HomePage extends Application {
     		    @Override
     		    protected void updateItem(Void item, boolean empty) {
     		        super.updateItem(item, empty);
-
     		        if (empty) {
     		            setGraphic(null);
     		            return;
     		        }
-
     		        qtyField.setText("");
     		        errorMsg.setVisible(false);
     		        setGraphic(wrapper);
     		    }
     		});
 
-    		
-    		
     		ph = new ProductHandler();
     		resp = ph.getProducts();
     		productTable.getItems().addAll(resp.getHashMap());
     		
-    		
-    		
     		actionCol.setCellFactory(col -> new TableCell<Product, Void>() {
-
     		    private final Button addBtn = new Button("Add to Cart");
-
     		    {
     		        addBtn.setStyle("-fx-background-color:#1e88e5; -fx-text-fill:white; -fx-background-radius:6;");
     		    }
@@ -242,78 +207,62 @@ public class HomePage extends Application {
     		    @Override
     		    protected void updateItem(Void item, boolean empty) {
     		        super.updateItem(item, empty);
-
     		        if (empty) {
     		            setGraphic(null);
     		            return;
     		        }
-
-    		        p = getTableView().getItems().get(getIndex());
-
+    		        rowProduct = getTableView().getItems().get(getIndex());
+    		        idProduct = rowProduct.getIdProduct();
     		        addBtn.setOnAction(e -> {
-    		        	
     		            qtyCell = (TableCell<Product, Void>) getTableRow().getChildrenUnmodifiable().get(4);
-
-    		            qtyField = (TextField) ((VBox) qtyCell.getGraphic()).getChildren().get(0);    		
+    		            qtyField = (TextField) ((VBox) qtyCell.getGraphic()).getChildren().get(0);
     		            errorMsg = (Label) ((VBox) qtyCell.getGraphic()).getChildren().get(1);
     		            errorMsg.setFont(Font.font("Arial", FontWeight.BOLD, 12));
 
     		            String val = qtyField.getText().trim();
-    		                		            
     		            if (val.isEmpty()) {
-    		                errorMsg.setText("Enter amount!");
+    		                errorMsg.setText("Count Field cannot be empty.");
+    		                errorMsg.setTextFill(Color.RED);
     		                errorMsg.setVisible(true);
     		                return;
     		            }
 
     		            int amount = Integer.parseInt(val);
-    		            int stock = p.getStock();
+    		            CartItemHandler handler = new CartItemHandler();
+    		            String result = null;
 
-    		            if (amount > stock) {
-    		                errorMsg.setText("Stock not enough!");
+    		            try {
+    		                result = handler.addToCart(SessionManager.getUser().getIdUser(), idProduct, amount);
     		                errorMsg.setVisible(true);
+    		                errorMsg.setText(result);
+    		                errorMsg.setTextFill(Color.GREEN);
+
+    		            } catch (InvalidInputException ex) {
+    		                errorMsg.setVisible(true);
+    		                errorMsg.setText(ex.getUserMessage());
+    		                errorMsg.setTextFill(Color.RED);
     		                return;
     		            }
-    		            
-    		            if(amount == 0) {
-    		                errorMsg.setText("Count cannot be 0!");
-    		                errorMsg.setVisible(true);
-    		                return;
-    		            }
-    		            
-    		            errorMsg.setVisible(false);
     		        });
-
-    		        wrapper = new VBox(addBtn);
-    		        wrapper.setAlignment(Pos.CENTER);
-
-    		        setGraphic(wrapper);
+    		        setGraphic(addBtn);
     		    }
     		});
-
-
     		productTable.getColumns().addAll(nameCol, priceCol, stockCol, categoryCol, quantityCol, actionCol);
-
     		productTable.setFixedCellSize(60);
     		productTable.prefHeightProperty().bind(productTable.fixedCellSizeProperty().multiply(productTable.getItems().size()).add(40));
     		productTable.minHeightProperty().bind(productTable.prefHeightProperty());
     		productTable.maxHeightProperty().bind(productTable.prefHeightProperty());
-    		
     		nameCol.setStyle("-fx-alignment: CENTER;");   
     		priceCol.setStyle("-fx-alignment: CENTER;");
     		stockCol.setStyle("-fx-alignment: CENTER;");
     		categoryCol.setStyle("-fx-alignment: CENTER;");
     		actionCol.setStyle("-fx-alignment: CENTER;");
-
     		productCatalogContainer.getChildren().addAll(catalogTitle, productTable);
-    		
     		finalContainer = new VBox(25, balanceCard, productCatalogContainer);
     		finalContainer.setAlignment(Pos.TOP_CENTER);
     		finalContainer.setPadding(new Insets(10, 20, 10, 20));
-
     		borderPane.setCenter(finalContainer);        		
         }
-        
     }
 
     @Override

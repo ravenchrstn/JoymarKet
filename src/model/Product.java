@@ -10,7 +10,9 @@ public class Product {
     private String idProduct, name, category;
     private Double price;
     private Integer stock;
+	
     private static final ProductDA productDA = ProductDA.getProductDA();
+
 
     public Product(String idProduct, String name, String category, Double price, Integer stock) {
         this.idProduct = idProduct;
@@ -18,6 +20,15 @@ public class Product {
         this.category = category;
         this.price = price;
         this.stock = stock;
+    }
+
+    public static Product getProductDA(String idProduct2) {
+    	try {
+    		return productDA.findById(idProduct2);
+    	} catch (Exception e) {
+    		e.printStackTrace();
+    	}
+    	return null;
     }
 
     public static Product fromResultSet(ResultSet rs) throws SQLException {

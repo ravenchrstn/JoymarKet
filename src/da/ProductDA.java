@@ -28,4 +28,14 @@ public class ProductDA {
         }
         return products;
     }
+    
+    public Product findById(String idProduct) throws SQLException {
+        String query = "SELECT * FROM product WHERE idProduct = '" + idProduct + "'";
+        ResultSet rs = connect.execQuery(query);
+
+        if (rs.next()) {
+            return Product.fromResultSet(rs);
+        }
+        return null;
+    }
 }
