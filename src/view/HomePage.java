@@ -44,7 +44,6 @@ public class HomePage extends Application {
     ProductHandler ph;
     Product p;
     Product rowProduct;
-    String idProduct;
     MultipleObjectsResponse<Product> resp;
     
     Label topUpBalance;
@@ -167,7 +166,9 @@ public class HomePage extends Application {
     		quantityCol.setCellFactory(col -> new TableCell<Product, Void>() {
     		    public TextField qtyField = new TextField();
     		    public Label errorMsg = new Label();
+    		    
     		    private final VBox wrapper = new VBox(2); 
+    		    
     		    {
     		        qtyField.setMaxWidth(60);
     		        qtyField.textProperty().addListener((obs, oldVal, newVal) -> {
@@ -194,9 +195,16 @@ public class HomePage extends Application {
     		    }
     		});
 
+    		
+    		
+    		
     		ph = new ProductHandler();
     		resp = ph.getProducts();
     		productTable.getItems().addAll(resp.getHashMap());
+    		
+    		
+    		
+    		
     		
     		actionCol.setCellFactory(col -> new TableCell<Product, Void>() {
     		    private final Button addBtn = new Button("Add to Cart");
@@ -212,7 +220,7 @@ public class HomePage extends Application {
     		            return;
     		        }
     		        rowProduct = getTableView().getItems().get(getIndex());
-    		        idProduct = rowProduct.getIdProduct();
+    		        String idProduct = rowProduct.getIdProduct();
     		        addBtn.setOnAction(e -> {
     		            qtyCell = (TableCell<Product, Void>) getTableRow().getChildrenUnmodifiable().get(4);
     		            qtyField = (TextField) ((VBox) qtyCell.getGraphic()).getChildren().get(0);

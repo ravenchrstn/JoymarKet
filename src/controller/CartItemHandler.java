@@ -37,5 +37,35 @@ public class CartItemHandler {
             return "An error occured while processing your request. Please try again later.";
         }
         return "Cart item is successfully deleted.";
-    }    
+    }
+
+    public String updateCount(String idUser, String idProduct, int count) throws InvalidInputException {
+        // Validasi awal
+        if (count <= 0) {
+            throw new InvalidInputException("Invalid Count.", "Count must be more than 0.");
+        }
+
+        // Ambil product dari database
+        Product p = Product.getProductDA(idProduct);
+        if (p == null) {
+            throw new InvalidInputException("Product Not Found.", "The product does not exist.");
+        }
+
+        // Cek stock
+        if (count > p.getStock()) {
+            throw new InvalidInputException("Low Stock.", "Stock not enough.");
+        }
+
+        try {
+            CartItem.updateCount(idUser, idProduct, count);
+        } catch (NoRowsAffectedException e) {
+            return e.getUserMessage(); 
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "An error occurred while updating the cart.";
+        }
+
+        return "Cart count updated successfully!";
+    }
+  
 }
