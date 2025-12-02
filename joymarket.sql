@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 30, 2025 at 10:13 AM
+-- Generation Time: Dec 02, 2025 at 04:45 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -43,6 +43,15 @@ CREATE TABLE `cartitem` (
   `idProduct` int(11) NOT NULL,
   `count` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cartitem`
+--
+
+INSERT INTO `cartitem` (`idCustomer`, `idProduct`, `count`) VALUES
+(13, 1, 40),
+(13, 2, 1),
+(13, 3, 1);
 
 -- --------------------------------------------------------
 
@@ -130,6 +139,18 @@ CREATE TABLE `product` (
   `category` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `product`
+--
+
+INSERT INTO `product` (`idProduct`, `name`, `price`, `stock`, `category`) VALUES
+(1, 'kentang', 15, 100, 'Food'),
+(2, 'Tomat', 10, 80, 'Food'),
+(3, 'Wortel', 12, 75, 'Food'),
+(4, 'Bayam', 15, 0, 'Food'),
+(5, 'Nasi', 6, 1, 'Food'),
+(6, 'Kol', 7, 2, 'Food');
+
 -- --------------------------------------------------------
 
 --
@@ -175,7 +196,7 @@ INSERT INTO `user` (`idUser`, `fullName`, `email`, `password`, `phone`, `address
 (10, '123', '123@gmail.com', '123123123', '1231231231231', '123', 'customer'),
 (11, '1', '1@gmail.com', '123123', '1231231231', '123', 'customer'),
 (12, 'a', 'abc@gmail.com', 'asdasd', '1231231231', '123', 'customer'),
-(13, 'human 123 123', '123@gmail.com', '1231231', '1231231231', 'human house', 'customer'),
+(13, 'human', '123@gmail.com', '1231231', '1231231231', 'human house', 'customer'),
 (14, 'abcde', 'aaa123@gmail.com', 'aaa123', '1231231231', '123aaa', 'customer'),
 (15, '123', '123@gmail.com', '123123123', '1231231231', '123', 'customer');
 
@@ -262,7 +283,7 @@ ALTER TABLE `orderheader`
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `idProduct` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idProduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `promo`
