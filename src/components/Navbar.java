@@ -34,14 +34,10 @@ public class Navbar extends HBox {
 	    cartBtn = new Button("Cart");
 	    cartBtn.setStyle("-fx-background-color: rgba(0,0,0,1); -fx-text-fill: white; -fx-background-radius: 6; -fx-font-size: 15px; -fx-font-weight: bold;");
 	    cartBtn.setOnMouseEntered(e -> cartBtn.setCursor(Cursor.HAND));
-	    cartBtn.setOnAction(e->{
-    		try {
-    			view.CartPage cp = new view.CartPage();
-				cp.start(stage);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
+	    cartBtn.setOnAction(e -> {
+	        new view.CartPage(stage).show();
 	    });
+
 	    
 	    EditProfileBtn = new Button("Edit Profile");
 	    EditProfileBtn.setStyle("-fx-background-color: rgba(0,0,0,1); -fx-text-fill: white; -fx-background-radius: 6; -fx-font-size: 15px; -fx-font-weight: bold;");

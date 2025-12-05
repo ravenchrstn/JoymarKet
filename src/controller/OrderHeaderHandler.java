@@ -41,7 +41,7 @@ public class OrderHeaderHandler {
     public String checkoutOrder(String idUser, String promoCode) {
         // diagram 7 - checkout and place order
         try {
-            ArrayList<HashMap<String, Object>> cartItemsAndStock = CartItem.getCartItemsAndStockByIdUser(idUser);
+            ArrayList<HashMap<String, Object>> cartItemsAndStock = CartItem.getCartItemsDataByIdCustomer(idUser);
             Double totalAmount = CartItem.getTotalAmountByUserId(idUser);
             Customer customer = Customer.getCustomerByIdUser(idUser);
             Double balance = customer.getBalance();

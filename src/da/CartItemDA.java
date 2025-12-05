@@ -32,18 +32,16 @@ public class CartItemDA {
 	    }
     }
 
-    public void deleteById(String idUser, String idProduct) throws NoRowsAffectedException, SQLException {
+    public void deleteById(String idCustomer, String idProduct) throws NoRowsAffectedException, SQLException {
         // diagram 5 - remove cart item
-        String query = "DELETE FROM cart_items WHERE idUser = " + idUser + " AND idProduct = " + idProduct + ";";
+        String query = "DELETE FROM cartitem WHERE idCustomer = " + idCustomer + " AND idProduct = " + idProduct + ";";
         HashMap<String, Object> hm = this.connect.execUpdate(query);
-        ResultSet rs = (ResultSet) hm.get("resultSet");
-        rs.next();
         if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("The item you are trying to delete was not found or has already been removed.");
     }
 
-    public ArrayList<HashMap<String, Object>> findCartItemsAndStockByIdUser(String idUser) throws SQLException {
+    public ArrayList<HashMap<String, Object>> findCartItemsDataByIdCustomer(String idCustomer) throws SQLException {
         // diagram 7 - checkout and place order
-        String query = "SELECT p.idProduct, p.name, ci.count, p.stock FROM cart_items ci JOIN products p ON ci.idProduct = p.idProduct WHERE ci.idUser = " + idUser + " ORDER BY p.idProduct ASC;";
+        String query = "SELECT p.idProduct, p.name, ci.count, p.stock, p.price, p.category FROM cartitem ci JOIN product p ON ci.idProduct = p.idProduct WHERE ci.idCustomer = " + idCustomer + " ORDER BY p.idProduct ASC;";
         ResultSet rs = this.connect.execQuery(query);
         ArrayList<HashMap<String, Object>> checkoutItems = new ArrayList<>();
         while (rs.next()) {
@@ -51,6 +49,8 @@ public class CartItemDA {
             hm.put("idProduct", rs.getString("idProduct"));
             hm.put("name", rs.getString("name"));
             hm.put("count", rs.getInt("count"));
+            hm.put("price", rs.getInt("price"));
+            hm.put("category", rs.getString("category"));
             hm.put("stock", rs.getInt("stock"));
             checkoutItems.add(hm);
         }
@@ -58,32 +58,31 @@ public class CartItemDA {
         return checkoutItems;
     }
 
-    public Double sumTotalAmountByIdUser(String idUser) {
+    public Double sumTotalAmountByIdCustomer(String idCustomer) {
         // diagram 7 - checkout and place order
-        String query = "SELECT SUM(ci.count * p.price) AS totalAmount FROM cart_items ci JOIN products p ON ci.idProduct = p.idProduct WHERE ci.idUser = " + idUser + " GROUP BY ci.idProduct";
+        String query = "SELECT SUM(ci.count * p.price) AS totalAmount FROM cartitem ci JOIN product p ON ci.idProduct = p.idProduct WHERE ci.idCustomer = " + idCustomer;
+        ResultSet rs = this.connect.execQuery(query);
         try {
-            return this.connect.execQuery(query).getDouble("totalAmount");
+        	if (rs.next()) {
+        		return rs.getDouble("totalAmount");
+        	}
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
+        return null;
     }
 
-    public void deleteAllByIdUser(String idUser) throws NoRowsAffectedException, SQLException {
+    public void deleteAllByIdCustomer(String idCustomer) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
-        String query = "DELETE FROM cart_items WHERE idUser = " + idUser + ";";
+        String query = "DELETE FROM cartitem WHERE idCustomer = " + idCustomer + ";";
         HashMap<String, Object> hm = this.connect.execUpdate(query);
-        ResultSet rs = (ResultSet) hm.get("resultSet");
-        rs.next();
         if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Your cart is already empty.");
     }
 
-    public void updateCount(String idUser, String idProduct, Integer count) throws SQLException, NoRowsAffectedException {
+    public void updateCount(String idCustomer, String idProduct, Integer count) throws SQLException, NoRowsAffectedException {
         // diagram 7 - checkout and place order
-        String query = "UPDATE cart_items SET count = " + count + " WHERE idUser = " + idUser + " AND idProduct = " + idProduct + ";";
+        String query = "UPDATE cartitem SET count = " + count + " WHERE idCustomer = " + idCustomer + " AND idProduct = " + idProduct + ";";
         HashMap<String, Object> hm = this.connect.execUpdate(query);
-        ResultSet rs = (ResultSet) hm.get("resultSet");
-        rs.next();
         if ((Integer) hm.get("rowsAffected") <= 0) throw new NoRowsAffectedException("Your cart is already empty.");
     }
 }

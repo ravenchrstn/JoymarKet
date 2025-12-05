@@ -42,5 +42,4 @@ public class Promo {
     public Double getDiscountPercentage() {
         return discountPercentage;
     }
-
 }

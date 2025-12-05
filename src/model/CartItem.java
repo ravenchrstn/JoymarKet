@@ -33,19 +33,19 @@ public class CartItem {
         cartItemDA.deleteById(idUser, idProduct);
     }
 
-    public static ArrayList<HashMap<String, Object>> getCartItemsAndStockByIdUser(String idUser) throws SQLException {
+    public static ArrayList<HashMap<String, Object>> getCartItemsDataByIdCustomer(String idUser) throws SQLException {
         // diagram 7 - checkout and place order
-        return cartItemDA.findCartItemsAndStockByIdUser(idUser);
+        return cartItemDA.findCartItemsDataByIdCustomer(idUser);
     }
 
     public static void deleteAllByIdUser(String idUser) throws NoRowsAffectedException, SQLException {
         // diagram 7 - checkout and place order
-        cartItemDA.deleteAllByIdUser(idUser);
+        cartItemDA.deleteAllByIdCustomer(idUser);
     }
 
     public static Double getTotalAmountByUserId(String idUser) {
         // diagram 7 - checkout and place order
-        return cartItemDA.sumTotalAmountByIdUser(idUser);
+        return cartItemDA.sumTotalAmountByIdCustomer(idUser);
     }
 
     public static void updateCount(String idUser, String idProduct, Integer count) throws SQLException, NoRowsAffectedException {
@@ -64,4 +64,9 @@ public class CartItem {
     public Integer getCount() {
         return count;
     }
+
+//	public static ArrayList<HashMap<String, Object>> getCartItemsAndStockByIdUser(String idUser2) {
+//		// TODO Auto-generated method stub
+//		return null;
+//	}
 }
