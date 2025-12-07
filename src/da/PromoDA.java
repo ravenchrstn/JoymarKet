@@ -16,13 +16,17 @@ public class PromoDA {
     }
 
     public HashMap<String, Object> findPromoInfoByCode(String code) throws SQLException {
-        // diagram 7 - checkout and place order
-        String query = "SELECT idPromo, discountPercentage FROM promos WHERE code = " + code + ";";
-        ResultSet rs = this.connect.execQuery(query);
-        rs.next();
-        HashMap<String, Object> promoInfo = new HashMap<>();
-        promoInfo.put("idPromo", rs.getString("idPromo"));
-        promoInfo.put("discountPercentage", rs.getDouble("discountPercentage"));
-        return promoInfo;
+        String q = "SELECT idPromo, discountPercentage FROM promo WHERE code = '" + code + "';";
+        ResultSet rs = this.connect.execQuery(q);
+
+        if (rs != null && rs.next()) {
+            HashMap<String, Object> promoInfo = new HashMap<>();
+            promoInfo.put("idPromo", rs.getString("idPromo"));
+            promoInfo.put("discountPercentage", rs.getDouble("discountPercentage"));
+            return promoInfo;
+        }
+
+        return null; 
     }
+
 }

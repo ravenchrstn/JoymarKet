@@ -3,8 +3,10 @@ package da;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import app.Connect;
+import exception.NoRowsAffectedException;
 import model.Product;
 
 public class ProductDA {
@@ -38,4 +40,14 @@ public class ProductDA {
         }
         return null;
     }
+
+    public void reduceStock(String idProduct, int amount) throws SQLException, NoRowsAffectedException {
+        String query = "UPDATE product SET stock = stock - " + amount + " WHERE idProduct = '" + idProduct + "' AND stock >= " + amount + ";";
+        HashMap<String, Object> hm = this.connect.execUpdate(query);
+        int rows = (Integer) hm.get("rowsAffected");
+        if (rows <= 0) {
+            throw new NoRowsAffectedException("Not enough stock for product " + idProduct);
+        }
+    }
+
 }

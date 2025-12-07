@@ -12,34 +12,38 @@ import model.Product;
 public class CartItemHandler {
 
 	public String addToCart(String idUser, String idProduct, int amount) throws InvalidInputException {
-		Product p = Product.getProductDA(idProduct);
-		Integer cartItemQuantity = -1;
-		ArrayList<HashMap<String, Object>> cartItems = new ArrayList<>();
-		try {
-			cartItems = CartItem.getCartItemsDataByIdCustomer(idUser);
-		} catch (SQLException e1) {
-			e1.printStackTrace();
-		}
-		
-		for (HashMap<String, Object> cartItem : cartItems) {
-			if (((String) cartItem.get("idProduct")).equals(idProduct)) {
-				cartItemQuantity = (Integer) cartItem.get("count");
-			}
-		}
-		
-        if (amount <= 0) throw new InvalidInputException("Count cannot be 0.", "Count must be more than 0.");
-        if (cartItemQuantity.compareTo(p.getStock()) > 0)  throw new InvalidInputException("Low Stock.", "Stock not enough.");
+	    Product p = Product.getProductDA(idProduct);
+	    if (p == null) throw new InvalidInputException("Product Not Found.", "The product does not exist.");
 
-        try {
-            CartItem.add(idUser, idProduct, amount);
-        } catch (NoRowsAffectedException e) {
-            return e.getUserMessage();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return "An error occurred while adding to cart.";
-        }
-        return "Successfully added to cart!";
-    }
+	    int existingQty = 0;
+	    try {
+	        ArrayList<HashMap<String, Object>> cartItems = CartItem.getCartItemsDataByIdCustomer(idUser);
+	        for (HashMap<String, Object> cartItem : cartItems) {
+	            if (idProduct.equals(cartItem.get("idProduct"))) {
+	                Object cnt = cartItem.get("count");
+	                if (cnt instanceof Number) existingQty = ((Number) cnt).intValue();
+	                break;
+	            }
+	        }
+	    } catch (SQLException e1) {
+	        e1.printStackTrace();
+	        return "Failed to read cart.";
+	    }
+
+	    if (amount <= 0) throw new InvalidInputException("Count cannot be 0.", "Count must be more than 0.");
+	    if (existingQty + amount > p.getStock())  throw new InvalidInputException("Low Stock.", "Stock not enough.");
+
+	    try {
+	        CartItem.add(idUser, idProduct, amount);
+	    } catch (NoRowsAffectedException e) {
+	        return e.getUserMessage();
+	    } catch (SQLException e) {
+	        e.printStackTrace();
+	        return "An error occurred while adding to cart.";
+	    }
+	    return "Successfully added to cart!";
+	}
+
 	
     public String delete(String idUser, String idProduct) {
         // diagram 5 - remove cart item
@@ -89,5 +93,36 @@ public class CartItemHandler {
     }
     
 //    public 
-  
+    public String checkout(String idUser) {
+        try {
+            ArrayList<HashMap<String, Object>> items = CartItem.getCartItemsDataByIdCustomer(idUser);
+            if (items == null || items.isEmpty()) {
+                return "Cart is empty.";
+            }
+            da.ProductDA productDA = da.ProductDA.getProductDA(); // if you have a get method
+            for (HashMap<String, Object> row : items) {
+                int count = (row.get("count") instanceof Number) ? ((Number)row.get("count")).intValue() : 0;
+                int stock = (row.get("stock") instanceof Number) ? ((Number)row.get("stock")).intValue() : 0;
+                if (count > stock) {
+                    return "Not enough stock: " + row.get("name");
+                }
+            }
+            // reduce stock
+            for (HashMap<String, Object> row : items) {
+                String idProduct = (String) row.get("idProduct");
+                int count = (row.get("count") instanceof Number) ? ((Number)row.get("count")).intValue() : 0;
+                productDA.reduceStock(idProduct, count);
+            }
+            CartItem.deleteAllByIdUser(idUser);
+            return "Checkout successful";
+        } catch (NoRowsAffectedException e) {
+            return e.getUserMessage();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "An error occurred during checkout.";
+        }
+    }
+
+
+
 }

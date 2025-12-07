@@ -64,9 +64,4 @@ public class CartItem {
     public Integer getCount() {
         return count;
     }
-
-//	public static ArrayList<HashMap<String, Object>> getCartItemsAndStockByIdUser(String idUser2) {
-//		// TODO Auto-generated method stub
-//		return null;
-//	}
 }

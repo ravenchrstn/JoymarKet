@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import components.Navbar;
+import controller.CartItemHandler;
+import controller.PromoHandler;
+import exception.NoRowsAffectedException;
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -15,16 +19,16 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import model.CartItem;
 
-public class CartPage{
+public class CartPage {
 
 	Scene scene;
-	
-    private String idUser; 
-    private TableView<HashMap<String, Object>> table = new TableView<>();
-    private ObservableList<HashMap<String, Object>> cartList = FXCollections.observableArrayList();
-    private Label totalLabel = new Label("0.0");
-    private Stage stage;
-    
+
+	private String idUser;
+	private TableView<HashMap<String, Object>> table = new TableView<>();
+	private ObservableList<HashMap<String, Object>> cartList = FXCollections.observableArrayList();
+	private Label totalLabel = new Label("0.0");
+	Stage stage;
+
     public CartPage(Stage stage) {
         this.stage = stage;
         this.idUser = auth.SessionManager.getUser().getIdUser();
@@ -35,160 +39,201 @@ public class CartPage{
         this.idUser = idUser;
     }
 
-    public void show() {
-        stage.setTitle("Your Cart");
+	public void show() {
+	    stage.setTitle("Your Cart");
+	    Navbar navbar = new Navbar(stage);
+	    BorderPane root = new BorderPane();
+	    root.setTop(navbar);
 
-        // COLUMNS ==============================================
-        
-        TableColumn<HashMap<String, Object>, String> colName = new TableColumn<>("Product");
-        colName.setCellValueFactory(c -> 
-            new javafx.beans.property.SimpleStringProperty(
-                (String) c.getValue().get("name")
-            )
-        );
-        colName.setPrefWidth(200);
+		// COLUMNS ==============================================
 
-        TableColumn<HashMap<String, Object>, Integer> colQty = new TableColumn<>("Qty");
-        colQty.setCellValueFactory(c -> 
-            new javafx.beans.property.SimpleIntegerProperty(
-                (Integer) c.getValue().get("count")
-            ).asObject()
-        );
-        colQty.setPrefWidth(70);
+		TableColumn<HashMap<String, Object>, String> colName = new TableColumn<>("Product");
+		colName.setCellValueFactory(
+				c -> new javafx.beans.property.SimpleStringProperty((String) c.getValue().get("name")));
+		colName.setPrefWidth(200);
 
-        TableColumn<HashMap<String, Object>, Double> colPrice = new TableColumn<>("Price");
-        colPrice.setCellValueFactory(c -> 
-            new javafx.beans.property.SimpleDoubleProperty(
-                (Integer) c.getValue().get("price")
-            ).asObject()
-        ); 
-        colPrice.setPrefWidth(100);
+		TableColumn<HashMap<String, Object>, Integer> colQty = new TableColumn<>("Qty");
+		colQty.setCellValueFactory(
+				c -> new javafx.beans.property.SimpleIntegerProperty((Integer) c.getValue().get("count")).asObject());
+		colQty.setPrefWidth(70);
 
-        TableColumn<HashMap<String, Object>, Double> colSubtotal = new TableColumn<>("Subtotal");
-        colSubtotal.setCellValueFactory(c -> {
-        	Integer subTotal = (Integer) c.getValue().get("price") * (Integer) c.getValue().get("count");
-            return new javafx.beans.property.SimpleDoubleProperty(subTotal).asObject();
-        });
-        colSubtotal.setPrefWidth(100);
+		TableColumn<HashMap<String, Object>, Double> colPrice = new TableColumn<>("Price");
+		colPrice.setCellValueFactory(
+				c -> new javafx.beans.property.SimpleDoubleProperty((Integer) c.getValue().get("price")).asObject());
+		colPrice.setPrefWidth(100);
 
-        TableColumn<HashMap<String, Object>, Void> colAction = new TableColumn<>("Actions");
-        colAction.setPrefWidth(200);
-        colAction.setCellFactory(col -> new TableCell<>() {
+		TableColumn<HashMap<String, Object>, Double> colSubtotal = new TableColumn<>("Subtotal");
+		colSubtotal.setCellValueFactory(c -> {
+			Integer subTotal = (Integer) c.getValue().get("price") * (Integer) c.getValue().get("count");
+			return new javafx.beans.property.SimpleDoubleProperty(subTotal).asObject();
+		});
+		colSubtotal.setPrefWidth(100);
 
-            private final Button btnUpdate = new Button("Update");
-            private final Button btnDel = new Button("Delete");
+		TableColumn<HashMap<String, Object>, Void> colAction = new TableColumn<>("Actions");
+		colAction.setPrefWidth(200);
+		colAction.setCellFactory(col -> new TableCell<>() {
 
-            {
-                btnUpdate.setOnAction(e -> {
-                    HashMap<String, Object> item = getTableView().getItems().get(getIndex());
-                    String idProduct = (String) item.get("idProduct");
+			private final Button btnUpdate = new Button("Update");
+			private final Button btnDel = new Button("Delete");
 
-                    TextInputDialog dialog = new TextInputDialog(item.get("count").toString());
-                    dialog.setHeaderText("Update Quantity");
-                    dialog.showAndWait().ifPresent(newQtyStr -> {
-                        try {
-                            Integer newQty = Integer.parseInt(newQtyStr);
-                            CartItem.updateCount(idUser, idProduct, newQty);
-                            loadCart();
-                        } catch (Exception ex) {
-                            ex.printStackTrace();
-                        }
-                    });
-                });
+			{
+				btnUpdate.setOnAction(e -> {
+					HashMap<String, Object> item = getTableView().getItems().get(getIndex());
+					String idProduct = (String) item.get("idProduct");
 
-                btnDel.setOnAction(e -> {
-                    HashMap<String, Object> item = getTableView().getItems().get(getIndex());
-                    String idProduct = (String) item.get("idProduct");
+					TextInputDialog dialog = new TextInputDialog(item.get("count").toString());
+					dialog.setHeaderText("Update Quantity");
+					dialog.showAndWait().ifPresent(newQtyStr -> {
+						try {
+							Integer newQty = Integer.parseInt(newQtyStr);
+							CartItem.updateCount(idUser, idProduct, newQty);
+							loadCart();
+						} catch (Exception ex) {
+							ex.printStackTrace();
+						}
+					});
+				});
 
-                    try {
-                        CartItem.delete(idUser, idProduct);
-                        loadCart();
-                    } catch (Exception ex) {
-                        ex.printStackTrace();
-                    }
-                });
-            }
+				btnDel.setOnAction(e -> {
+					HashMap<String, Object> item = getTableView().getItems().get(getIndex());
+					String idProduct = (String) item.get("idProduct");
 
-            @Override
-            protected void updateItem(Void v, boolean empty) {
-                super.updateItem(v, empty);
-                if (empty) setGraphic(null);
-                else {
-                    HBox actions = new HBox(10, btnUpdate, btnDel);
-                    actions.setAlignment(Pos.CENTER);
-                    setGraphic(actions);
-                }
-            }
-        });
+					try {
+						CartItem.delete(idUser, idProduct);
+						loadCart();
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
+				});
+			}
 
-        table.getColumns().addAll(colName, colQty, colPrice, colSubtotal, colAction);
-        table.setItems(cartList);
+			@Override
+			protected void updateItem(Void v, boolean empty) {
+				super.updateItem(v, empty);
+				if (empty)
+					setGraphic(null);
+				else {
+					HBox actions = new HBox(10, btnUpdate, btnDel);
+					actions.setAlignment(Pos.CENTER);
+					setGraphic(actions);
+				}
+			}
+		});
 
-        // PROMO
-        TextField promoField = new TextField();
-        promoField.setPromptText("Promo Code");
+		table.getColumns().addAll(colName, colQty, colPrice, colSubtotal, colAction);
+		table.setItems(cartList);
 
-        Button applyPromoBtn = new Button("Apply");
-        applyPromoBtn.setOnAction(e -> applyPromo(promoField.getText()));
+		// PROMO
+		TextField promoField = new TextField();
+		promoField.setPromptText("Promo Code");
 
-        HBox promoBox = new HBox(10, promoField, applyPromoBtn);
-        promoBox.setPadding(new Insets(10));
+		Button applyPromoBtn = new Button("Apply");
+		applyPromoBtn.setOnAction(e -> applyPromo(promoField.getText()));
 
-        // TOTAL
-        HBox totalBox = new HBox(10, new Label("Total: "), totalLabel);
-        totalBox.setAlignment(Pos.CENTER_RIGHT);
-        totalBox.setPadding(new Insets(10));
+		HBox promoBox = new HBox(10, promoField, applyPromoBtn);
+		promoBox.setPadding(new Insets(10));
 
-        // CHECKOUT
-        Button checkoutBtn = new Button("Checkout");
-        checkoutBtn.setOnAction(e -> checkout());
+		// TOTAL
+		HBox totalBox = new HBox(10, new Label("Total: "), totalLabel);
+		totalBox.setAlignment(Pos.CENTER_RIGHT);
+		totalBox.setPadding(new Insets(10));
 
-        VBox root = new VBox(new Navbar(stage), table, promoBox, totalBox, checkoutBtn);
-        root.setPadding(new Insets(20));
+		// CHECKOUT
+		Button checkoutBtn = new Button("Checkout");
+		checkoutBtn.setOnAction(e -> checkout());
 
-        stage.setScene(new Scene(root, 750, 600));
-        stage.show();
+		VBox content = new VBox(15, table, promoBox, totalBox, checkoutBtn);
+		content.setPadding(new Insets(20));
+		root.setCenter(content);
+		
+		stage.setScene(new Scene(root, 750, 600));
+		stage.show();
 
-        loadCart();
-    }
+		loadCart();
+	}
 
-    // ================= LOAD CART FROM DB ======================
-    private void loadCart() {
-        try {
-            ArrayList<HashMap<String, Object>> list = CartItem.getCartItemsDataByIdCustomer(idUser);
-            cartList.setAll(list);
-            updateTotal();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
+	// ================= LOAD CART FROM DB ======================
+	private void loadCart() {
+		try {
+			ArrayList<HashMap<String, Object>> list = CartItem.getCartItemsDataByIdCustomer(idUser);
+			cartList.setAll(list);
+			updateTotal();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 
-    // ================= TOTAL ======================
-    private void updateTotal() {
-        Double total = CartItem.getTotalAmountByUserId(idUser);
-        totalLabel.setText(String.format("%.2f", total));
-    }
+	// ================= TOTAL ======================
+	private void updateTotal() {
+		Double total = CartItem.getTotalAmountByUserId(idUser);
+		totalLabel.setText(String.format("%.2f", total));
+	}
 
-    // ================= PROMO ======================
-    private boolean isPromoApplied = false;
-    private void applyPromo(String code) {
-        if (code.equalsIgnoreCase("DISKON10") && isPromoApplied == false) {
-            double total = Double.parseDouble(totalLabel.getText());
-            totalLabel.setText(String.format("%.2f", total * 0.9));
-            isPromoApplied = true;
-        }
-    }
+	// ================= PROMO ======================
+	private PromoHandler promoHandler = new PromoHandler(); // add import
 
-    // ================= CHECKOUT ======================
-    private void checkout() {
-        try {
-            CartItem.deleteAllByIdUser(idUser);
-            loadCart();
-            new Alert(Alert.AlertType.INFORMATION, "Checkout successful!").show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//	private void applyPromo(String code) {
+//		Double discountPercent = promoHandler.getDiscountByCode(code);
+//		if (discountPercent == null) {
+//			new Alert(Alert.AlertType.ERROR, "Promo code not valid").show();
+//			return;
+//		}
+//		double total = CartItem.getTotalAmountByUserId(idUser);
+//		double totalAfter = total * (1 - discountPercent / 100.0);
+//		totalLabel.setText(String.format("%.2f", totalAfter));
+//	}
 
+	private boolean isPromoApplied = false;
+
+	private void applyPromo(String code) {
+
+		if (isPromoApplied) {
+			new Alert(Alert.AlertType.INFORMATION, "Promo sudah digunakan").show();
+			return;
+		}
+
+		Double discountPercent = promoHandler.getDiscountByCode(code);
+
+		// Jika kode tidak ditemukan
+		if (discountPercent == null) {
+			new Alert(Alert.AlertType.ERROR, "Promo code not valid").show();
+			return;
+		}
+
+		// Hitung total sekarang
+		double total = CartItem.getTotalAmountByUserId(idUser);
+
+		// Hitung diskon
+		double totalAfter = total * (1 - discountPercent / 100.0);
+
+		// Update label
+		totalLabel.setText(String.format("%.2f", totalAfter));
+
+		isPromoApplied = true;
+	}
+
+	// ================= CHECKOUT ======================
+	private CartItemHandler cartHandler = new CartItemHandler();
+
+	private void checkout() {
+		try {
+			CartItemHandler handler = new CartItemHandler();
+			ArrayList<HashMap<String, Object>> items = CartItem.getCartItemsDataByIdCustomer(idUser);
+			if (items == null || items.isEmpty()) {
+				new Alert(Alert.AlertType.WARNING, "Cannot checkout: Cart is empty").show();
+				return;
+			}
+			String res = handler.checkout(idUser);
+			if ("Checkout successful".equals(res)) {
+				loadCart();
+				new Alert(Alert.AlertType.INFORMATION, res).show();
+			} else {
+				new Alert(Alert.AlertType.ERROR, res).show();
+			}
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+			new Alert(Alert.AlertType.ERROR, "Error checking cart").show();
+		}
+	}
 
 }
