@@ -7,8 +7,6 @@ import java.util.HashMap;
 import components.Navbar;
 import controller.CartItemHandler;
 import controller.PromoHandler;
-import exception.NoRowsAffectedException;
-import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
@@ -213,7 +211,6 @@ public class CartPage {
 	}
 
 	// ================= CHECKOUT ======================
-	private CartItemHandler cartHandler = new CartItemHandler();
 
 	private void checkout() {
 		try {
