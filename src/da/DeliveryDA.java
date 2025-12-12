@@ -18,7 +18,7 @@ public class DeliveryDA {
 
     public String findStatus(String idOrder, String idUser) {
         // diagram 12 - assign order to courier
-        String query = "SELECT status FROM deliveries WHERE idOrder = " + idOrder + " AND idUser = " + idUser + ";";
+        String query = "SELECT status FROM delivery WHERE idOrder = " + idOrder + " AND idUser = " + idUser + ";";
         try {
             return this.connect.execQuery(query).getString("status");
         } catch (SQLException e) {
@@ -29,7 +29,7 @@ public class DeliveryDA {
 
     public void updateStatus(String idOrder, String idUser, String status) throws NoRowsAffectedException, SQLException {
         // diagram 12 - assign order to courier
-        String query = "UPDATE deliveries SET status = " + status + " WHERE idUser = " + idUser + " AND idUser = " + idUser + ";";
+        String query = "UPDATE delivery SET status = " + status + " WHERE idUser = " + idUser + " AND idUser = " + idUser + ";";
         HashMap<String, Object> hm = this.connect.execUpdate(query);
         ResultSet rs = (ResultSet) hm.get("resultSet");
         rs.next();

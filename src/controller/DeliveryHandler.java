@@ -37,4 +37,23 @@ public class DeliveryHandler {
         }
         return "Your account is successfully created!";
     }
+    
+    public String updateDeliveryStatus(String idOrder, String idUser) {
+        // diagram 12/14 - update delivery status by courier
+        String status = Delivery.getStatus(idOrder, idUser);
+        try {
+            if ("pending".equals(status)) {
+                Delivery.updateStatus(idOrder, idUser, "in progress");
+            } else if ("in progress".equals(status)) {
+                Delivery.updateStatus(idOrder, idUser, "delivered");
+            }
+        } catch (NoRowsAffectedException e) {
+            e.printStackTrace();
+            return e.getUserMessage();
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return "An error occured while processing your request. Please try again later.";
+        }
+        return "Delivery status is successfully updated!";
+    }
 }

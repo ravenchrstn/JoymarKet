@@ -32,6 +32,10 @@ public class Product {
     public String getIdProduct() {
         return idProduct;
     }
+    
+    public static Product getById(String idProduct) throws SQLException {
+        return productDA.findById(idProduct);
+    }
 
     public String getName() {
         return name;
@@ -47,5 +51,10 @@ public class Product {
 
     public Integer getStock() {
         return stock;
+    }
+    
+    public static void updateStock(String idProduct, Integer stock)
+            throws SQLException, exception.NoRowsAffectedException {
+        productDA.updateStock(idProduct, stock);
     }
 }
