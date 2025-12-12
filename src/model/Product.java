@@ -5,6 +5,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import da.ProductDA;
+import exception.NoRowsAffectedException;
 
 public class Product {
     private String idProduct, name, category;
@@ -39,6 +40,11 @@ public class Product {
         // diagram 2 - view products
         return productDA.findAll();
     }
+    
+    // update stock by admin
+    public static void updateStock(String idProduct, int newStock) throws SQLException, NoRowsAffectedException {
+        productDA.updateStock(idProduct, newStock);
+    }
 
     public String getIdProduct() {
         return idProduct;
@@ -58,5 +64,9 @@ public class Product {
 
     public Integer getStock() {
         return stock;
+    }
+    
+    public void setStock(int stock) {
+        this.stock = stock;
     }
 }

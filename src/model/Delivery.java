@@ -27,6 +27,11 @@ public class Delivery {
     public static void updateStatus(String idOrder, String idUser, String status) throws NoRowsAffectedException, SQLException {
         deliveryDA.updateStatus(idOrder, idUser, status);
     }
+    
+    public static void create(String idOrder, String idCourier, String status)
+            throws SQLException, NoRowsAffectedException {
+        deliveryDA.save(idOrder, idCourier, status);
+    }
 
     public String getIdOrder() {
         return idOrder;

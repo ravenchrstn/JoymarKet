@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 02, 2025 at 04:45 PM
+-- Generation Time: Dec 12, 2025 at 09:28 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -32,6 +32,13 @@ CREATE TABLE `admin` (
   `emergencyContact` varchar(50) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `admin`
+--
+
+INSERT INTO `admin` (`idAdmin`, `emergencyContact`) VALUES
+(2, '12312312312');
+
 -- --------------------------------------------------------
 
 --
@@ -44,15 +51,6 @@ CREATE TABLE `cartitem` (
   `count` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `cartitem`
---
-
-INSERT INTO `cartitem` (`idCustomer`, `idProduct`, `count`) VALUES
-(13, 1, 40),
-(13, 2, 1),
-(13, 3, 1);
-
 -- --------------------------------------------------------
 
 --
@@ -64,6 +62,13 @@ CREATE TABLE `courier` (
   `vehicleType` varchar(50) DEFAULT NULL,
   `vehiclePlate` varchar(20) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `courier`
+--
+
+INSERT INTO `courier` (`idCourier`, `vehicleType`, `vehiclePlate`) VALUES
+(3, 'car', 'B 1234 XYZ');
 
 -- --------------------------------------------------------
 
@@ -81,10 +86,8 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`idCustomer`, `balance`) VALUES
-(7, 123936936.34),
-(13, 30000),
-(14, 0),
-(15, 0);
+(1, 9985),
+(4, 0);
 
 -- --------------------------------------------------------
 
@@ -98,6 +101,13 @@ CREATE TABLE `delivery` (
   `status` varchar(30) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `delivery`
+--
+
+INSERT INTO `delivery` (`idOrder`, `idCourier`, `status`) VALUES
+(1, 3, 'completed');
+
 -- --------------------------------------------------------
 
 --
@@ -109,6 +119,14 @@ CREATE TABLE `orderdetail` (
   `idProduct` int(11) NOT NULL,
   `qty` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orderdetail`
+--
+
+INSERT INTO `orderdetail` (`idOrder`, `idProduct`, `qty`) VALUES
+(1, 1, 0),
+(2, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -122,8 +140,18 @@ CREATE TABLE `orderheader` (
   `idPromo` int(11) DEFAULT NULL,
   `status` varchar(30) DEFAULT NULL,
   `orderedAt` date DEFAULT NULL,
-  `totalAmount` double DEFAULT NULL
+  `totalAmount` double DEFAULT NULL,
+  `customerNotified` tinyint(4) DEFAULT 0,
+  `notifiedCompleted` tinyint(4) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orderheader`
+--
+
+INSERT INTO `orderheader` (`idOrder`, `idCustomer`, `idPromo`, `status`, `orderedAt`, `totalAmount`, `customerNotified`, `notifiedCompleted`) VALUES
+(1, 1, NULL, 'completed', '2025-12-12', 0, 0, 0),
+(2, 1, NULL, 'pending', '2025-12-12', 15, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -144,12 +172,9 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`idProduct`, `name`, `price`, `stock`, `category`) VALUES
-(1, 'kentang', 15, 100, 'Food'),
-(2, 'Tomat', 10, 80, 'Food'),
-(3, 'Wortel', 12, 75, 'Food'),
-(4, 'Bayam', 15, 0, 'Food'),
-(5, 'Nasi', 6, 1, 'Food'),
-(6, 'Kol', 7, 2, 'Food');
+(1, 'Kentang', 15, 998, 'Food'),
+(2, 'Wortel', 10, 999, 'Food'),
+(3, 'Nasi', 9, 999, 'Food');
 
 -- --------------------------------------------------------
 
@@ -185,20 +210,10 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`idUser`, `fullName`, `email`, `password`, `phone`, `address`, `role`) VALUES
-(2, 'a', 'a@gmail.com', 'aaaaaa', '1231231233', 'a', 'customer'),
-(3, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
-(4, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
-(5, 'a', 'a@gmail.com', 'aaaaaa', '1231231231', 'a', 'customer'),
-(6, 'a', 'a@gmail.com', 'asdasd', '1231231231', '1', 'customer'),
-(7, 'mmmmmmmm', 'a@gmail.com', '123123', '11111111111', '1123', 'customer'),
-(8, 'a', 'a@gmail.com', 'fghfgh', '1231231231', '1231231231', 'customer'),
-(9, 'a', 'a@gmail.com', '123123', '1231231231', '123', 'customer'),
-(10, '123', '123@gmail.com', '123123123', '1231231231231', '123', 'customer'),
-(11, '1', '1@gmail.com', '123123', '1231231231', '123', 'customer'),
-(12, 'a', 'abc@gmail.com', 'asdasd', '1231231231', '123', 'customer'),
-(13, 'human', '123@gmail.com', '1231231', '1231231231', 'human house', 'customer'),
-(14, 'abcde', 'aaa123@gmail.com', 'aaa123', '1231231231', '123aaa', 'customer'),
-(15, '123', '123@gmail.com', '123123123', '1231231231', '123', 'customer');
+(1, 'customer human', 'customer@gmail.com', '123123123', '123123123123', '123 human house', 'customer'),
+(2, 'Admin Human', 'admin@gmail.com', 'admin123', '123123123321', '123 admin house', 'admin'),
+(3, 'Courier Human', 'courier@gmail.com', 'courier123', '12345678910', '123 courier house', 'courier'),
+(4, 'Customer 2', 'customer2@gmail.com', 'customer2', '123123123123', '123 customer2 house', 'customer');
 
 --
 -- Indexes for dumped tables
@@ -277,13 +292,13 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `orderheader`
 --
 ALTER TABLE `orderheader`
-  MODIFY `idOrder` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idOrder` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `idProduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `idProduct` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `promo`
@@ -295,7 +310,7 @@ ALTER TABLE `promo`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `idUser` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

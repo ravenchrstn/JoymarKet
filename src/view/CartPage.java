@@ -50,10 +50,10 @@ public class CartPage {
 	}
 
 	public void show() {
-		stage.setTitle("Your Cart");
-		Navbar navbar = new Navbar(stage);
-		BorderPane root = new BorderPane();
-		root.setTop(navbar);
+		 stage.setTitle("Your Cart");
+		 Navbar navbar = new Navbar(stage);
+		 BorderPane root = new BorderPane();
+		 root.setTop(navbar);
 
 		// COLUMNS ==============================================
 
@@ -156,7 +156,8 @@ public class CartPage {
 		content.setPadding(new Insets(20));
 		root.setCenter(content);
 
-		stage.setScene(new Scene(root, 750, 600));
+        scene = new Scene(root, 800, 500);
+        stage.setScene(scene);
 		stage.show();
 
 		loadCart();

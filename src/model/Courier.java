@@ -20,6 +20,11 @@ public class Courier extends User {
     public String getVehiclePlate() {
         return vehiclePlate;
     }
+    
+    @Override
+    public String toString() {
+        return fullName + " (" + idUser + ")";
+    }
 
     public static Courier fromResultSet(ResultSet rs) throws SQLException {
         return new Courier(rs.getString("idUser"), rs.getString("fullName"), rs.getString("email"), rs.getString("password"), rs.getString("phone"), rs.getString("address"), rs.getString("vehicleType"), rs.getString("vehiclePlate"));

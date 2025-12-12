@@ -64,7 +64,7 @@ public class Register extends Application{
 	public Register() {
 		vbox_main = new VBox();
 		borderPane = new BorderPane();
-		scene = new Scene(borderPane, 500, 600);
+        scene = new Scene(borderPane, 800, 500);
 
 		borderPane.setCenter(vbox_main);
 		vbox_main.setAlignment(Pos.CENTER);

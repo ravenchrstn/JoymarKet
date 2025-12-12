@@ -33,7 +33,7 @@ public class TopUpPage extends Application {
 	public TopUpPage(){
 		
 	    borderPane = new BorderPane();
-	    scene = new Scene(borderPane, 500, 500); 
+        scene = new Scene(borderPane, 800, 500);
 	    vbox_main = new VBox(20);
 	    vbox_main.setAlignment(Pos.CENTER);
 	    vbox_main.setPadding(new Insets(30));

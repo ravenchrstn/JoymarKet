@@ -9,8 +9,10 @@ import exception.InvalidInputException;
 import exception.NoRowsAffectedException;
 import exception.NotFoundException;
 import helper.Checking;
+import javafx.scene.control.Alert;
 import model.Courier;
 import model.Customer;
+import model.OrderHeader;
 import model.User;
 import response.MultipleObjectsResponse;
 
@@ -69,6 +71,13 @@ public class UserHandler {
     }
     
     public String login(String email, String password) {
+    	// kalau ada order yang cancelled, dia nampilin alert
+        User user = SessionManager.getUser();
+        if (user != null) {
+        	SessionManager.saveSession(user);
+        	return "Your login is successful!";
+        }
+        
         try {
             if (email == null || email.isEmpty())
                 throw new InvalidInputException("email field is empty.", "Email field is empty. Try input something.");
@@ -85,7 +94,10 @@ public class UserHandler {
                 throw new NotFoundException("Password is wrong.");
 
             // ngambil user
-            User loggedUser = User.getUserDA().getUserByEmail(email);
+            User loggedUser = User.getUserByEmail(email);
+            if (loggedUser == null) {
+            	return "No user is found!";
+            }
 
             // ngesave session
             SessionManager.saveSession(loggedUser);
@@ -98,8 +110,9 @@ public class UserHandler {
             e.printStackTrace();
             return "An error occured while processing your request. Please try again later.";
         }
-
+        
         return "Your login is successful!";
+        
     }
     
     public String TopUpBalance(String userId, String input) {
@@ -144,8 +157,9 @@ public class UserHandler {
 
             User.updateUserById(userId, fullName, phone, address);
 
-            User UpdatedUser = User.getUserDA().getUserByIdl(userId);
-            SessionManager.saveSession(UpdatedUser);
+            User updatedUser = User.getUserDA().getUserByEmail(SessionManager.getUser().getEmail());
+            SessionManager.saveSession(updatedUser);
+
             
         } catch (NoRowsAffectedException e) {
             return e.getUserMessage();
@@ -157,5 +171,15 @@ public class UserHandler {
         }
         return "Edit Profile is successful!";
 	}
+    
+    public User reloadUser(String idUser) {
+        try {
+            return User.getUserDA().getUserById(idUser);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 
 }

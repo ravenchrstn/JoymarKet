@@ -1,5 +1,6 @@
 package model;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 
@@ -92,5 +93,13 @@ public abstract class User {
 
 		userDA.updateBalanceByIdUser(idUser, newBalance);
 	}
-
+	
+	public static User getUserByEmail(String email) throws NotFoundException {
+		UserDA userDA = getUserDA();
+		try {
+			return userDA.getUserByEmail(email);
+		} catch (SQLException e) {
+			throw new NotFoundException("No user found!");
+		}
+	}
 }

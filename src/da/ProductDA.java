@@ -49,5 +49,13 @@ public class ProductDA {
             throw new NoRowsAffectedException("Not enough stock for product " + idProduct);
         }
     }
+    
+    public void updateStock(String idProduct, int newStock) throws SQLException, NoRowsAffectedException {
+        String query = "UPDATE product SET stock = " + newStock + " WHERE idProduct = '" + idProduct + "'";
+        HashMap<String, Object> hm = connect.execUpdate(query);
+        if ((Integer) hm.get("rowsAffected") <= 0) {
+            throw new NoRowsAffectedException("Failed to update product stock.");
+        }
+    }
 
 }

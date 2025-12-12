@@ -1,10 +1,14 @@
 package view;
+import java.util.ArrayList;
+
+import auth.SessionManager;
 import controller.UserHandler;
 import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Hyperlink;
 import javafx.scene.control.Label;
@@ -17,6 +21,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import model.OrderHeader;
+import model.User;
 
 public class Login extends Application{
 
@@ -45,7 +51,7 @@ public class Login extends Application{
 			
 			vbox_main = new VBox();
 			borderPane = new BorderPane();
-			scene = new Scene(borderPane, 500, 500);
+	        scene = new Scene(borderPane, 800, 500);
 
 			borderPane.setCenter(vbox_main);
 			vbox_main.setAlignment(Pos.CENTER);
@@ -120,33 +126,98 @@ public class Login extends Application{
 			
 			vbox_main.getChildren().addAll(loginLabel, gap1, vbox_email, gap2, vbox_password, gap3, loginBtn, gap4, registerHyperlink);
 
-			loginBtn.setOnAction(e->{
-				String result = UH.login(emailTextField.getText(), passwordField.getText());
-				if(! result.equals("Your login is successful!")) {
-					if(result.toLowerCase().contains("email")) {
-						errorEmailLabel.setText(result);
-						errorEmailLabel.setManaged(true);
-					}
-					else {
-						errorEmailLabel.setText("");
-						errorEmailLabel.setManaged(false);
-					}
-					if(result.toLowerCase().contains("password")) {
-						errorPasswordLabel.setText(result);
-						errorPasswordLabel.setManaged(true);
-					}
-					else {
-						errorPasswordLabel.setText("");
-						errorPasswordLabel.setManaged(false);
-					}
-				}
-				else {
-			        try {
-			            new HomePage().start((Stage) loginBtn.getScene().getWindow());
-			        } catch (Exception e1) {
-			            e1.printStackTrace();
+			loginBtn.setOnAction(e -> {
+			    String result = UH.login(emailTextField.getText(), passwordField.getText());
+
+			    if (!result.equals("Your login is successful!")) {
+
+			        // email error
+			        if (result.toLowerCase().contains("email")) {
+			            errorEmailLabel.setText(result);
+			            errorEmailLabel.setManaged(true);
+			        } else {
+			            errorEmailLabel.setText("");
+			            errorEmailLabel.setManaged(false);
 			        }
-				}
+
+			        // password error
+			        if (result.toLowerCase().contains("password")) {
+			            errorPasswordLabel.setText(result);
+			            errorPasswordLabel.setManaged(true);
+			        } else {
+			            errorPasswordLabel.setText("");
+			            errorPasswordLabel.setManaged(false);
+			        }
+			        
+			        // password error
+			        if (result.toLowerCase().contains("session")) {
+			            errorPasswordLabel.setText(result);
+			            errorPasswordLabel.setManaged(true);
+			        } else {
+			            errorPasswordLabel.setText("");
+			            errorPasswordLabel.setManaged(false);
+			        }
+
+			    } else {
+			        try {
+			            User loggedUser = SessionManager.getUser();
+			            Stage stage = (Stage) loginBtn.getScene().getWindow();
+
+			            // SHOW CANCELLED ORDER NOTIFICATION (ONLY ONCE)
+			            if (loggedUser.getRole().equalsIgnoreCase("Customer")) {
+
+			                String customerId = loggedUser.getIdUser();
+
+			                ArrayList<OrderHeader> cancelledOrders =
+			                        OrderHeader.getUnnotifiedCancelledOrders(customerId);
+
+			                if (!cancelledOrders.isEmpty()) {
+
+			                    OrderHeader oh = cancelledOrders.get(0);
+
+			                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			                    alert.setTitle("Order Cancelled");
+			                    alert.setHeaderText("Your order has been cancelled");
+			                    alert.setContentText("Order " + oh.getIdOrder() + " was cancelled by the admin.");
+			                    alert.showAndWait();
+
+			                    // Mark all as notified
+			                    for (OrderHeader o : cancelledOrders) {
+			                        OrderHeader.markCustomerNotified(o.getIdOrder());
+			                    }
+			                }
+			                
+			                ArrayList<OrderHeader> completedOrders =
+			                	    OrderHeader.getUnnotifiedCompletedOrders(customerId);
+
+			                	if (!completedOrders.isEmpty()) {
+			                	    OrderHeader oh = completedOrders.get(0);
+
+			                	    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+			                	    alert.setTitle("Order Completed");
+			                	    alert.setHeaderText("Your order has been completed");
+			                	    alert.setContentText("Order " + oh.getIdOrder() + " was successfully delivered!");
+			                	    alert.showAndWait();
+
+			                	    for (OrderHeader o : completedOrders) {
+			                	        OrderHeader.markCustomerNotifiedCompleted(o.getIdOrder());
+			                	    }
+			                	}
+
+
+			                new HomePage().start(stage);
+
+			            } else if (loggedUser.getRole().equalsIgnoreCase("Admin")) {
+			                new AdminPage().start(stage);
+
+			            } else if (loggedUser.getRole().equalsIgnoreCase("Courier")) {
+			                new CourierPage().start(stage);
+			            }
+
+			        } catch (Exception ex) {
+			            ex.printStackTrace();
+			        }
+			    }
 			});
 		}
 		

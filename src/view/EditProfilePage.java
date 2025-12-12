@@ -19,6 +19,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import model.User;
 
 public class EditProfilePage extends Application {
 
@@ -48,7 +49,7 @@ public class EditProfilePage extends Application {
     
     public EditProfilePage() {
         borderPane = new BorderPane();
-        scene = new Scene(borderPane, 500, 500);
+        scene = new Scene(borderPane, 800, 500);
 
         vbox_main = new VBox(10);
         vbox_main.setAlignment(Pos.TOP_LEFT);
@@ -117,52 +118,55 @@ public class EditProfilePage extends Application {
                 successBox
         );
         
-        saveBtn.setOnAction(e->{
-        	UserHandler UH = new UserHandler();
-        	String result = UH.editProfile(SessionManager.getUser().getIdUser(), fullNameField.getText(), phoneField.getText(), addressArea.getText());
-        	
-        	if(!result.equals("Edit Profile is successful!")) {
-        		successMesssage.setText("");
-        		successMesssage.setManaged(false);
-        		
-        		if(result.contains("Full")) {
-        			errorFullNameLabel.setText(result);
-        			errorFullNameLabel.setManaged(true);
-        		}
-        		else {
-        			errorFullNameLabel.setText("");
-        			errorFullNameLabel.setManaged(false);
-        		}
-        		
-        		if(result.contains("Phone")) {
-        			errorPhoneLabel.setText(result);
-        			errorPhoneLabel.setManaged(true);
-        		}
-        		else {
-        			errorPhoneLabel.setText("");
-        			errorPhoneLabel.setManaged(false);
-        		}
-        		
-        		if(result.contains("Address")) {
-        			errorAddressLabel.setText(result);
-        			errorAddressLabel.setManaged(true);
-        		}
-        		else {
-        			errorAddressLabel.setText("");
-        			errorAddressLabel.setManaged(false);
-        		}
-        	}
-        	else {
-        	    errorFullNameLabel.setText("");
-        	    errorFullNameLabel.setManaged(false);
-        	    errorPhoneLabel.setText("");
-        	    errorPhoneLabel.setManaged(false);
-        	    errorAddressLabel.setText("");
-        	    errorAddressLabel.setManaged(false);
-        	    
-        	    successMesssage.setText(result);
-        	    successMesssage.setManaged(true);
-        	}
+        saveBtn.setOnAction(e -> {
+
+            UserHandler UH = new UserHandler();
+            String result = UH.editProfile(
+                SessionManager.getUser().getIdUser(),
+                fullNameField.getText(),
+                phoneField.getText(),
+                addressArea.getText()
+            );
+
+            // reset
+            errorFullNameLabel.setManaged(false);
+            errorPhoneLabel.setManaged(false);
+            errorAddressLabel.setManaged(false);
+            successMesssage.setManaged(false);
+
+            if (!result.equals("Edit Profile is successful!")) {
+
+                if (result.contains("Full")) {
+                    errorFullNameLabel.setText(result);
+                    errorFullNameLabel.setManaged(true);
+                }
+
+                if (result.contains("Phone")) {
+                    errorPhoneLabel.setText(result);
+                    errorPhoneLabel.setManaged(true);
+                }
+
+                if (result.contains("Address")) {
+                    errorAddressLabel.setText(result);
+                    errorAddressLabel.setManaged(true);
+                }
+
+                return;
+            }
+
+            // Success
+            successMesssage.setText(result);
+            successMesssage.setManaged(true);
+
+            try {
+                String email = SessionManager.getUser().getEmail();
+                User updatedUser = User.getUserDA().getUserByEmail(email);
+                SessionManager.saveSession(updatedUser);
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                System.out.println("Failed to reload session.");
+            }
         });
     }
 
