@@ -131,7 +131,6 @@ public class Login extends Application{
 
 			    if (!result.equals("Your login is successful!")) {
 
-			        // email error
 			        if (result.toLowerCase().contains("email")) {
 			            errorEmailLabel.setText(result);
 			            errorEmailLabel.setManaged(true);
@@ -140,17 +139,7 @@ public class Login extends Application{
 			            errorEmailLabel.setManaged(false);
 			        }
 
-			        // password error
 			        if (result.toLowerCase().contains("password")) {
-			            errorPasswordLabel.setText(result);
-			            errorPasswordLabel.setManaged(true);
-			        } else {
-			            errorPasswordLabel.setText("");
-			            errorPasswordLabel.setManaged(false);
-			        }
-			        
-			        // password error
-			        if (result.toLowerCase().contains("session")) {
 			            errorPasswordLabel.setText(result);
 			            errorPasswordLabel.setManaged(true);
 			        } else {
@@ -163,7 +152,6 @@ public class Login extends Application{
 			            User loggedUser = SessionManager.getUser();
 			            Stage stage = (Stage) loginBtn.getScene().getWindow();
 
-			            // SHOW CANCELLED ORDER NOTIFICATION (ONLY ONCE)
 			            if (loggedUser.getRole().equalsIgnoreCase("Customer")) {
 
 			                String customerId = loggedUser.getIdUser();
@@ -181,7 +169,6 @@ public class Login extends Application{
 			                    alert.setContentText("Order " + oh.getIdOrder() + " was cancelled by the admin.");
 			                    alert.showAndWait();
 
-			                    // Mark all as notified
 			                    for (OrderHeader o : cancelledOrders) {
 			                        OrderHeader.markCustomerNotified(o.getIdOrder());
 			                    }

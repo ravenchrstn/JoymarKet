@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 12, 2025 at 09:28 AM
+-- Generation Time: Dec 13, 2025 at 06:20 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -86,7 +86,7 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`idCustomer`, `balance`) VALUES
-(1, 9985),
+(1, 9973),
 (4, 0);
 
 -- --------------------------------------------------------
@@ -126,7 +126,8 @@ CREATE TABLE `orderdetail` (
 
 INSERT INTO `orderdetail` (`idOrder`, `idProduct`, `qty`) VALUES
 (1, 1, 0),
-(2, 1, 1);
+(2, 1, 1),
+(3, 1, 1);
 
 -- --------------------------------------------------------
 
@@ -150,8 +151,9 @@ CREATE TABLE `orderheader` (
 --
 
 INSERT INTO `orderheader` (`idOrder`, `idCustomer`, `idPromo`, `status`, `orderedAt`, `totalAmount`, `customerNotified`, `notifiedCompleted`) VALUES
-(1, 1, NULL, 'completed', '2025-12-12', 0, 0, 0),
-(2, 1, NULL, 'pending', '2025-12-12', 15, 0, 0);
+(1, 1, NULL, 'completed', '2025-12-12', 0, 0, 1),
+(2, 1, NULL, 'pending', '2025-12-12', 15, 0, 0),
+(3, 1, 1, 'pending', '2025-12-13', 12, 0, 0);
 
 -- --------------------------------------------------------
 
@@ -172,7 +174,7 @@ CREATE TABLE `product` (
 --
 
 INSERT INTO `product` (`idProduct`, `name`, `price`, `stock`, `category`) VALUES
-(1, 'Kentang', 15, 998, 'Food'),
+(1, 'Kentang', 15, 997, 'Food'),
 (2, 'Wortel', 10, 999, 'Food'),
 (3, 'Nasi', 9, 999, 'Food');
 
@@ -188,6 +190,13 @@ CREATE TABLE `promo` (
   `headline` varchar(200) DEFAULT NULL,
   `discountPercentage` double DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `promo`
+--
+
+INSERT INTO `promo` (`idPromo`, `code`, `headline`, `discountPercentage`) VALUES
+(1, 'PROMO2025', 'diskon untuk tahun 2025', 20);
 
 -- --------------------------------------------------------
 
@@ -292,7 +301,7 @@ ALTER TABLE `user`
 -- AUTO_INCREMENT for table `orderheader`
 --
 ALTER TABLE `orderheader`
-  MODIFY `idOrder` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `idOrder` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `product`
@@ -304,7 +313,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT for table `promo`
 --
 ALTER TABLE `promo`
-  MODIFY `idPromo` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `idPromo` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `user`

@@ -50,12 +50,9 @@ public class CartPage {
 	}
 
 	public void show() {
-		 stage.setTitle("Your Cart");
 		 Navbar navbar = new Navbar(stage);
 		 BorderPane root = new BorderPane();
 		 root.setTop(navbar);
-
-		// COLUMNS ==============================================
 
 		TableColumn<HashMap<String, Object>, String> colName = new TableColumn<>("Product");
 		colName.setCellValueFactory(
@@ -133,7 +130,6 @@ public class CartPage {
 		table.getColumns().addAll(colName, colQty, colPrice, colSubtotal, colAction);
 		table.setItems(cartList);
 
-		// PROMO
 		TextField promoField = new TextField();
 		promoField.setPromptText("Promo Code");
 
@@ -143,12 +139,10 @@ public class CartPage {
 		HBox promoBox = new HBox(10, promoField, applyPromoBtn);
 		promoBox.setPadding(new Insets(10));
 
-		// TOTAL
 		HBox totalBox = new HBox(10, new Label("Total: "), totalLabel);
 		totalBox.setAlignment(Pos.CENTER_RIGHT);
 		totalBox.setPadding(new Insets(10));
 
-		// CHECKOUT
 		Button checkoutBtn = new Button("Checkout");
 		checkoutBtn.setOnAction(e -> checkout(idUser, promoField.getText()));
 
@@ -163,7 +157,6 @@ public class CartPage {
 		loadCart();
 	}
 
-	// ================= LOAD CART FROM DB ======================
 	private void loadCart() {
 		try {
 			ArrayList<HashMap<String, Object>> list = CartItem.getCartItemsDataByIdCustomer(idUser);
@@ -174,25 +167,12 @@ public class CartPage {
 		}
 	}
 
-	// ================= TOTAL ======================
 	private void updateTotal() {
 		Double total = CartItem.getTotalAmountByUserId(idUser);
 		totalLabel.setText(String.format("%.2f", total));
 	}
 
-	// ================= PROMO ======================
 	private PromoHandler promoHandler = new PromoHandler(); // add import
-
-//	private void applyPromo(String code) {
-//		Double discountPercent = promoHandler.getDiscountByCode(code);
-//		if (discountPercent == null) {
-//			new Alert(Alert.AlertType.ERROR, "Promo code not valid").show();
-//			return;
-//		}
-//		double total = CartItem.getTotalAmountByUserId(idUser);
-//		double totalAfter = total * (1 - discountPercent / 100.0);
-//		totalLabel.setText(String.format("%.2f", totalAfter));
-//	}
 
 	private boolean isPromoApplied = false;
 
@@ -205,25 +185,19 @@ public class CartPage {
 
 		Double discountPercent = promoHandler.getDiscountByCode(code);
 
-		// Jika kode tidak ditemukan
 		if (discountPercent == null) {
 			new Alert(Alert.AlertType.ERROR, "Promo code not valid").show();
 			return;
 		}
-
-		// Hitung total sekarang
+		
 		double total = CartItem.getTotalAmountByUserId(idUser);
 
-		// Hitung diskon
 		double totalAfter = total * (1 - discountPercent / 100.0);
 
-		// Update label
 		totalLabel.setText(String.format("%.2f", totalAfter));
 
 		isPromoApplied = true;
 	}
-
-	// ================= CHECKOUT ======================
 
 	private void checkout(String idUser, String promoCode) {
 		try {
@@ -233,7 +207,6 @@ public class CartPage {
 				return;
 			}
 
-			// 1. Cek stok
 			for (HashMap<String, Object> row : items) {
 				int count = ((Number) row.get("count")).intValue();
 				int stock = ((Number) row.get("stock")).intValue();
@@ -243,10 +216,8 @@ public class CartPage {
 				}
 			}
 
-			// 2. Hitung total
 			double total = CartItem.getTotalAmountByUserId(idUser);
 
-			// 3. Promo
 			HashMap<String, Object> promoInfo = Promo.getPromoInfoByCode(promoCode);
 			String idPromo = null;
 
@@ -256,32 +227,25 @@ public class CartPage {
 				idPromo = (String) promoInfo.get("idPromo");
 			}
 
-			// 4. Kurangi saldo
 			User.reduceBalance(idUser, total);
 
-			// 5. Insert header
 			String idOrder = OrderHeader.insert(idUser, idPromo, total);
 
-			// 6. Insert detail
 			for (HashMap<String, Object> row : items) {
 				String idProduct = (String) row.get("idProduct");
 				int qty = ((Number) row.get("count")).intValue();
 				OrderDetail.insert(idOrder, idProduct, qty);
 			}
 
-			// 7. Kurangi stok
 			da.ProductDA productDA = da.ProductDA.getProductDA();
 			for (HashMap<String, Object> row : items) {
 				productDA.reduceStock((String) row.get("idProduct"), ((Number) row.get("count")).intValue());
 			}
 
-			// 8. Hapus cart
 			CartItem.deleteAllByIdUser(idUser);
 
-			// 9. Show popup dulu!
 			new Alert(Alert.AlertType.INFORMATION, "Checkout successful!").show();
 
-			// 10. Baru refresh UI
 			loadCart();
 
 		} catch (Exception ex) {

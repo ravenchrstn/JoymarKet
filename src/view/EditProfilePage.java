@@ -128,7 +128,6 @@ public class EditProfilePage extends Application {
                 addressArea.getText()
             );
 
-            // reset
             errorFullNameLabel.setManaged(false);
             errorPhoneLabel.setManaged(false);
             errorAddressLabel.setManaged(false);
@@ -154,7 +153,6 @@ public class EditProfilePage extends Application {
                 return;
             }
 
-            // Success
             successMesssage.setText(result);
             successMesssage.setManaged(true);
 
